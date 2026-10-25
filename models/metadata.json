@@ -1,0 +1,460 @@
+{
+  "task": "3-class classification of next-month capacity-factor tier for Sri Lankan NCRE plants",
+  "classes": [
+    "Low",
+    "Moderate",
+    "High"
+  ],
+  "features": [
+    "installed_capacity_mw",
+    "nat_hydro_lag1_gwh",
+    "cf_lag1",
+    "cf_lag2",
+    "cf_lag3",
+    "cf_lag12",
+    "cf_roll3",
+    "cf_trend",
+    "plant_mean_cf",
+    "month_sin",
+    "month_cos",
+    "category",
+    "season"
+  ],
+  "train_period": "2023-02 .. 2024-06",
+  "test_period": "2024-07 .. 2024-12",
+  "train_rows": 5339,
+  "test_rows": 1973,
+  "default_model": "Soft Voting (RF+XGB)",
+  "best_test_macro_f1_model": "Soft Voting (RF+XGB)",
+  "model_files": {
+    "Random Forest": "random_forest.pkl",
+    "XGBoost": "xgboost.pkl",
+    "Soft Voting (RF+XGB)": "model.pkl",
+    "Stacking (RF+XGB -> LogReg)": "stacking.pkl"
+  },
+  "test_metrics": {
+    "Persistence baseline": {
+      "accuracy": 0.7177,
+      "balanced_accuracy": 0.6988,
+      "macro_f1": 0.6983,
+      "weighted_f1": 0.7166,
+      "log_loss": NaN,
+      "roc_auc_ovr": NaN,
+      "fit_seconds": 0.0,
+      "time_cv_macro_f1": NaN
+    },
+    "Random Forest": {
+      "accuracy": 0.6949,
+      "balanced_accuracy": 0.6729,
+      "macro_f1": 0.6685,
+      "weighted_f1": 0.6904,
+      "log_loss": 0.6806,
+      "roc_auc_ovr": 0.8499,
+      "fit_seconds": 2.8122,
+      "time_cv_macro_f1": 0.5873
+    },
+    "XGBoost": {
+      "accuracy": 0.6989,
+      "balanced_accuracy": 0.6868,
+      "macro_f1": 0.6715,
+      "weighted_f1": 0.6921,
+      "log_loss": 0.711,
+      "roc_auc_ovr": 0.8552,
+      "fit_seconds": 1.4008,
+      "time_cv_macro_f1": 0.5781
+    },
+    "Soft Voting (RF+XGB)": {
+      "accuracy": 0.7076,
+      "balanced_accuracy": 0.6951,
+      "macro_f1": 0.6823,
+      "weighted_f1": 0.7015,
+      "log_loss": 0.6739,
+      "roc_auc_ovr": 0.8559,
+      "fit_seconds": 4.1217,
+      "time_cv_macro_f1": 0.584
+    },
+    "Stacking (RF+XGB -> LogReg)": {
+      "accuracy": 0.705,
+      "balanced_accuracy": 0.6824,
+      "macro_f1": 0.6775,
+      "weighted_f1": 0.6997,
+      "log_loss": 0.704,
+      "roc_auc_ovr": 0.8523,
+      "fit_seconds": 21.4424,
+      "time_cv_macro_f1": 0.5711
+    }
+  },
+  "time_cv_macro_f1": {
+    "Random Forest": {
+      "mean": 0.5873453077418267,
+      "std": 0.048295846128882276
+    },
+    "XGBoost": {
+      "mean": 0.5780678179309594,
+      "std": 0.035100286944319076
+    },
+    "Soft Voting (RF+XGB)": {
+      "mean": 0.5839602183356051,
+      "std": 0.038285352999063535
+    },
+    "Stacking (RF+XGB -> LogReg)": {
+      "mean": 0.5710771657788148,
+      "std": 0.053273246803303274
+    }
+  },
+  "validation_curves": {
+    "rf_max_depth": {
+      "4": 0.5566827254588147,
+      "8": 0.5872457871683948,
+      "14": 0.5846214052214661,
+      "20": 0.5914770637973291,
+      "30": 0.5919693985909031
+    },
+    "xgb_max_depth": {
+      "2": 0.559924051456813,
+      "3": 0.5780678179309594,
+      "5": 0.5604726107967463,
+      "7": 0.5599360191740615,
+      "9": 0.5648388732786916
+    }
+  },
+  "per_category_macro_f1": {
+    "Random Forest": {
+      "Mini Hydro": 0.537,
+      "Wind": 0.752,
+      "Solar": 0.708,
+      "Biomass": 0.461,
+      "Dendro": 0.301,
+      "Municipal Waste": 0.455
+    },
+    "XGBoost": {
+      "Mini Hydro": 0.525,
+      "Wind": 0.768,
+      "Solar": 0.708,
+      "Biomass": 0.495,
+      "Dendro": 0.301,
+      "Municipal Waste": 0.4
+    },
+    "Soft Voting (RF+XGB)": {
+      "Mini Hydro": 0.543,
+      "Wind": 0.782,
+      "Solar": 0.719,
+      "Biomass": 0.455,
+      "Dendro": 0.301,
+      "Municipal Waste": 0.455
+    },
+    "Stacking (RF+XGB -> LogReg)": {
+      "Mini Hydro": 0.55,
+      "Wind": 0.816,
+      "Solar": 0.703,
+      "Biomass": 0.443,
+      "Dendro": 0.301,
+      "Municipal Waste": 0.4
+    }
+  },
+  "classification_reports": {
+    "Persistence baseline": {
+      "Low": {
+        "precision": 0.6189111747851003,
+        "recall": 0.6101694915254238,
+        "f1-score": 0.6145092460881935,
+        "support": 354.0
+      },
+      "Moderate": {
+        "precision": 0.7119496855345911,
+        "recall": 0.6794717887154862,
+        "f1-score": 0.6953316953316954,
+        "support": 833.0
+      },
+      "High": {
+        "precision": 0.7647768395657418,
+        "recall": 0.806615776081425,
+        "f1-score": 0.785139318885449,
+        "support": 786.0
+      },
+      "accuracy": 0.7176887987835783,
+      "macro avg": {
+        "precision": 0.698545899961811,
+        "recall": 0.6987523521074449,
+        "f1-score": 0.6983267534351126,
+        "support": 1973.0
+      },
+      "weighted avg": {
+        "precision": 0.7163016927637673,
+        "recall": 0.7176887987835783,
+        "f1-score": 0.7166077445364853,
+        "support": 1973.0
+      }
+    },
+    "Random Forest": {
+      "Low": {
+        "precision": 0.5681818181818182,
+        "recall": 0.5649717514124294,
+        "f1-score": 0.56657223796034,
+        "support": 354.0
+      },
+      "Moderate": {
+        "precision": 0.7150997150997151,
+        "recall": 0.602641056422569,
+        "f1-score": 0.654071661237785,
+        "support": 833.0
+      },
+      "High": {
+        "precision": 0.7279651795429815,
+        "recall": 0.851145038167939,
+        "f1-score": 0.78475073313783,
+        "support": 786.0
+      },
+      "accuracy": 0.6948808920425747,
+      "macro avg": {
+        "precision": 0.670415570941505,
+        "recall": 0.6729192820009792,
+        "f1-score": 0.6684648774453184,
+        "support": 1973.0
+      },
+      "weighted avg": {
+        "precision": 0.6938647021972679,
+        "recall": 0.6948808920425747,
+        "f1-score": 0.6904320031907601,
+        "support": 1973.0
+      }
+    },
+    "XGBoost": {
+      "Low": {
+        "precision": 0.5382716049382716,
+        "recall": 0.615819209039548,
+        "f1-score": 0.5744400527009222,
+        "support": 354.0
+      },
+      "Moderate": {
+        "precision": 0.7899305555555556,
+        "recall": 0.5462184873949579,
+        "f1-score": 0.6458481192334989,
+        "support": 833.0
+      },
+      "High": {
+        "precision": 0.7116935483870968,
+        "recall": 0.8982188295165394,
+        "f1-score": 0.7941507311586051,
+        "support": 786.0
+      },
+      "accuracy": 0.6989356310187532,
+      "macro avg": {
+        "precision": 0.6799652362936414,
+        "recall": 0.686752175317015,
+        "f1-score": 0.6714796343643421,
+        "support": 1973.0
+      },
+      "weighted avg": {
+        "precision": 0.7136094424521967,
+        "recall": 0.6989356310187532,
+        "f1-score": 0.692116440277899,
+        "support": 1973.0
+      }
+    },
+    "Soft Voting (RF+XGB)": {
+      "Low": {
+        "precision": 0.5623409669211196,
+        "recall": 0.6242937853107344,
+        "f1-score": 0.5917001338688086,
+        "support": 354.0
+      },
+      "Moderate": {
+        "precision": 0.7766830870279147,
+        "recall": 0.5678271308523409,
+        "f1-score": 0.6560332871012483,
+        "support": 833.0
+      },
+      "High": {
+        "precision": 0.7229660144181257,
+        "recall": 0.8931297709923665,
+        "f1-score": 0.7990893568582812,
+        "support": 786.0
+      },
+      "accuracy": 0.7075519513431323,
+      "macro avg": {
+        "precision": 0.6873300227890534,
+        "recall": 0.6950835623851472,
+        "f1-score": 0.6822742592761126,
+        "support": 1973.0
+      },
+      "weighted avg": {
+        "precision": 0.716825646790155,
+        "recall": 0.7075519513431323,
+        "f1-score": 0.701480897128995,
+        "support": 1973.0
+      }
+    },
+    "Stacking (RF+XGB -> LogReg)": {
+      "Low": {
+        "precision": 0.5771428571428572,
+        "recall": 0.5706214689265536,
+        "f1-score": 0.5738636363636364,
+        "support": 354.0
+      },
+      "Moderate": {
+        "precision": 0.7243867243867244,
+        "recall": 0.602641056422569,
+        "f1-score": 0.6579292267365662,
+        "support": 833.0
+      },
+      "High": {
+        "precision": 0.7387096774193549,
+        "recall": 0.8740458015267175,
+        "f1-score": 0.8006993006993007,
+        "support": 786.0
+      },
+      "accuracy": 0.7050177394830208,
+      "macro avg": {
+        "precision": 0.6800797529829788,
+        "recall": 0.6824361089586134,
+        "f1-score": 0.6774973879331677,
+        "support": 1973.0
+      },
+      "weighted avg": {
+        "precision": 0.7036738567127855,
+        "recall": 0.7050177394830208,
+        "f1-score": 0.6997224650248034,
+        "support": 1973.0
+      }
+    }
+  },
+  "per_month_macro_f1": {
+    "2024-07": {
+      "Persistence baseline": 0.7156,
+      "Soft Voting (RF+XGB)": 0.8148
+    },
+    "2024-08": {
+      "Persistence baseline": 0.7697,
+      "Soft Voting (RF+XGB)": 0.5839
+    },
+    "2024-09": {
+      "Persistence baseline": 0.7762,
+      "Soft Voting (RF+XGB)": 0.7197
+    },
+    "2024-10": {
+      "Persistence baseline": 0.7547,
+      "Soft Voting (RF+XGB)": 0.6311
+    },
+    "2024-11": {
+      "Persistence baseline": 0.5303,
+      "Soft Voting (RF+XGB)": 0.7074
+    },
+    "2024-12": {
+      "Persistence baseline": 0.6315,
+      "Soft Voting (RF+XGB)": 0.6087
+    }
+  },
+  "regime_change_accuracy": {
+    "Persistence baseline": {
+      "stable_acc": 1.0,
+      "changed_acc": 0.0,
+      "n_stable": 1416,
+      "n_changed": 557
+    },
+    "Random Forest": {
+      "stable_acc": 0.8157,
+      "changed_acc": 0.3878,
+      "n_stable": 1416,
+      "n_changed": 557
+    },
+    "XGBoost": {
+      "stable_acc": 0.8185,
+      "changed_acc": 0.395,
+      "n_stable": 1416,
+      "n_changed": 557
+    },
+    "Soft Voting (RF+XGB)": {
+      "stable_acc": 0.822,
+      "changed_acc": 0.4165,
+      "n_stable": 1416,
+      "n_changed": 557
+    },
+    "Stacking (RF+XGB -> LogReg)": {
+      "stable_acc": 0.8206,
+      "changed_acc": 0.4111,
+      "n_stable": 1416,
+      "n_changed": 557
+    }
+  },
+  "feature_importance": {
+    "rf_impurity": {
+      "cf_lag1": 0.2655,
+      "cf_trend": 0.1163,
+      "category_Solar": 0.0903,
+      "cf_roll3": 0.0697,
+      "cf_lag12": 0.0686,
+      "plant_mean_cf": 0.0668,
+      "cf_lag3": 0.0529,
+      "cf_lag2": 0.0495,
+      "nat_hydro_lag1_gwh": 0.044,
+      "month_sin": 0.0432,
+      "month_cos": 0.0393,
+      "installed_capacity_mw": 0.0334,
+      "category_Mini Hydro": 0.0199,
+      "season_SW Monsoon": 0.0124,
+      "season_First Inter-monsoon": 0.007,
+      "missingindicator_cf_lag12": 0.0052,
+      "category_Wind": 0.0049,
+      "season_NE Monsoon": 0.0037,
+      "season_Second Inter-monsoon": 0.0035,
+      "missingindicator_cf_lag3": 0.0015,
+      "missingindicator_cf_trend": 0.0007,
+      "missingindicator_cf_lag1": 0.0007,
+      "missingindicator_cf_lag2": 0.0006,
+      "category_Biomass": 0.0004,
+      "category_Dendro": 0.0002,
+      "category_Municipal Waste": 0.0
+    },
+    "xgb_gain": {
+      "category_Solar": 0.1987999975681305,
+      "cf_lag1": 0.13109999895095825,
+      "season_First Inter-monsoon": 0.065700002014637,
+      "cf_lag12": 0.052400000393390656,
+      "category_Mini Hydro": 0.05139999836683273,
+      "cf_trend": 0.05009999871253967,
+      "month_sin": 0.043800000101327896,
+      "cf_roll3": 0.03759999945759773,
+      "nat_hydro_lag1_gwh": 0.03660000115633011,
+      "season_SW Monsoon": 0.03530000150203705,
+      "missingindicator_cf_lag12": 0.03480000048875809,
+      "month_cos": 0.03420000150799751,
+      "category_Wind": 0.029100000858306885,
+      "plant_mean_cf": 0.02500000037252903,
+      "season_NE Monsoon": 0.02280000038444996,
+      "missingindicator_cf_trend": 0.02070000022649765,
+      "season_Second Inter-monsoon": 0.019500000402331352,
+      "cf_lag2": 0.018200000748038292,
+      "cf_lag3": 0.01720000058412552,
+      "missingindicator_cf_lag1": 0.017100000753998756,
+      "category_Dendro": 0.012400000356137753,
+      "missingindicator_cf_lag2": 0.012299999594688416,
+      "installed_capacity_mw": 0.01209999993443489,
+      "missingindicator_cf_lag3": 0.011800000444054604,
+      "category_Biomass": 0.00989999994635582,
+      "category_Municipal Waste": 0.0
+    },
+    "voting_permutation": {
+      "cf_lag1": 0.0982,
+      "category": 0.0796,
+      "cf_lag12": 0.0653,
+      "cf_trend": 0.0127,
+      "plant_mean_cf": 0.0097,
+      "cf_lag3": 0.008,
+      "installed_capacity_mw": 0.0064,
+      "nat_hydro_lag1_gwh": 0.0036,
+      "month_sin": 0.0036,
+      "cf_roll3": 0.0031,
+      "cf_lag2": 0.0026,
+      "season": -0.0027,
+      "month_cos": -0.0056
+    }
+  },
+  "rf_oob_score": 0.8033339576699756,
+  "versions": {
+    "python": "3.11.9",
+    "sklearn": "1.5.0",
+    "xgboost": "3.2.0",
+    "pandas": "2.1.1"
+  }
+}

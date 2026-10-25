@@ -1,0 +1,289 @@
+Year,Month,Ownership,Source,Is_Renewable,Generation_GWh
+2024,Jan,CEB,Major Hydro,1,631.353
+2024,Jan,CEB,Thermal Oil,0,59.713
+2024,Jan,CEB,Thermal Coal,0,356.217
+2024,Jan,CEB,Wind (Mannar),1,21.922
+2024,Jan,IPP,Mini Hydro,1,145.656
+2024,Jan,IPP,Wind,1,19.203
+2024,Jan,IPP,Solar (Grid),1,18.8
+2024,Jan,IPP,Solar (Rooftop),1,53.191
+2024,Jan,IPP,Dendro,1,7.2
+2024,Jan,IPP,Biomass,1,1.269
+2024,Jan,IPP,Municipal Waste,1,6.932
+2024,Jan,IPP,Thermal Oil,0,45.666
+2024,Feb,CEB,Major Hydro,1,307.33
+2024,Feb,CEB,Thermal Oil,0,104.973
+2024,Feb,CEB,Thermal Coal,0,612.321
+2024,Feb,CEB,Wind (Mannar),1,22.281
+2024,Feb,IPP,Mini Hydro,1,86.149
+2024,Feb,IPP,Wind,1,22.786
+2024,Feb,IPP,Solar (Grid),1,21.182
+2024,Feb,IPP,Solar (Rooftop),1,62.091
+2024,Feb,IPP,Dendro,1,6.122
+2024,Feb,IPP,Biomass,1,1.703
+2024,Feb,IPP,Municipal Waste,1,7.8
+2024,Feb,IPP,Thermal Oil,0,122.037
+2024,Mar,CEB,Major Hydro,1,324.925
+2024,Mar,CEB,Thermal Oil,0,227.784
+2024,Mar,CEB,Thermal Coal,0,656.946
+2024,Mar,CEB,Wind (Mannar),1,10.849
+2024,Mar,IPP,Mini Hydro,1,43.422
+2024,Mar,IPP,Wind,1,11.868
+2024,Mar,IPP,Solar (Grid),1,24.595
+2024,Mar,IPP,Solar (Rooftop),1,68.25
+2024,Mar,IPP,Dendro,1,6.942
+2024,Mar,IPP,Biomass,1,1.201
+2024,Mar,IPP,Municipal Waste,1,7.097
+2024,Mar,IPP,Thermal Oil,0,163.463
+2024,Apr,CEB,Major Hydro,1,379.671
+2024,Apr,CEB,Thermal Oil,0,252.883
+2024,Apr,CEB,Thermal Coal,0,536.643
+2024,Apr,CEB,Wind (Mannar),1,8.421
+2024,Apr,IPP,Mini Hydro,1,59.71
+2024,Apr,IPP,Wind,1,9.225
+2024,Apr,IPP,Solar (Grid),1,22.302
+2024,Apr,IPP,Solar (Rooftop),1,72.435
+2024,Apr,IPP,Dendro,1,6.22
+2024,Apr,IPP,Biomass,1,1.275
+2024,Apr,IPP,Municipal Waste,1,6.401
+2024,Apr,IPP,Thermal Oil,0,76.404
+2024,May,CEB,Major Hydro,1,399.319
+2024,May,CEB,Thermal Oil,0,214.405
+2024,May,CEB,Thermal Coal,0,572.55
+2024,May,CEB,Wind (Mannar),1,30.317
+2024,May,IPP,Mini Hydro,1,129.181
+2024,May,IPP,Wind,1,34.209
+2024,May,IPP,Solar (Grid),1,17.638
+2024,May,IPP,Solar (Rooftop),1,62.84
+2024,May,IPP,Dendro,1,6.732
+2024,May,IPP,Biomass,1,0.978
+2024,May,IPP,Municipal Waste,1,6.022
+2024,May,IPP,Thermal Oil,0,10.505
+2024,Jun,CEB,Major Hydro,1,469.687
+2024,Jun,CEB,Thermal Oil,0,40.031
+2024,Jun,CEB,Thermal Coal,0,518.521
+2024,Jun,CEB,Wind (Mannar),1,62.307
+2024,Jun,IPP,Mini Hydro,1,159.797
+2024,Jun,IPP,Wind,1,67.839
+2024,Jun,IPP,Solar (Grid),1,20.143
+2024,Jun,IPP,Solar (Rooftop),1,59.842
+2024,Jun,IPP,Dendro,1,7.218
+2024,Jun,IPP,Biomass,1,1.354
+2024,Jun,IPP,Municipal Waste,1,5.075
+2024,Jun,IPP,Thermal Oil,0,15.56
+2024,Jul,CEB,Major Hydro,1,509.265
+2024,Jul,CEB,Thermal Oil,0,117.516
+2024,Jul,CEB,Thermal Coal,0,473.069
+2024,Jul,CEB,Wind (Mannar),1,60.247
+2024,Jul,IPP,Mini Hydro,1,137.219
+2024,Jul,IPP,Wind,1,70.531
+2024,Jul,IPP,Solar (Grid),1,22.387
+2024,Jul,IPP,Solar (Rooftop),1,67.78
+2024,Jul,IPP,Dendro,1,6.607
+2024,Jul,IPP,Biomass,1,2.142
+2024,Jul,IPP,Municipal Waste,1,5.274
+2024,Jul,IPP,Thermal Oil,0,42.115
+2024,Aug,CEB,Major Hydro,1,437.928
+2024,Aug,CEB,Thermal Oil,0,151.923
+2024,Aug,CEB,Thermal Coal,0,553.583
+2024,Aug,CEB,Wind (Mannar),1,50.644
+2024,Aug,IPP,Mini Hydro,1,124.46
+2024,Aug,IPP,Wind,1,47.558
+2024,Aug,IPP,Solar (Grid),1,22.512
+2024,Aug,IPP,Solar (Rooftop),1,76.805
+2024,Aug,IPP,Dendro,1,6.994
+2024,Aug,IPP,Biomass,1,1.573
+2024,Aug,IPP,Municipal Waste,1,5.43
+2024,Aug,IPP,Thermal Oil,0,33.303
+2024,Sep,CEB,Major Hydro,1,403.376
+2024,Sep,CEB,Thermal Oil,0,73.727
+2024,Sep,CEB,Thermal Coal,0,574.639
+2024,Sep,CEB,Wind (Mannar),1,53.481
+2024,Sep,IPP,Mini Hydro,1,120.835
+2024,Sep,IPP,Wind,1,63.491
+2024,Sep,IPP,Solar (Grid),1,25.516
+2024,Sep,IPP,Solar (Rooftop),1,84.588
+2024,Sep,IPP,Dendro,1,6.532
+2024,Sep,IPP,Biomass,1,1.254
+2024,Sep,IPP,Municipal Waste,1,5.573
+2024,Sep,IPP,Thermal Oil,0,53.839
+2024,Oct,CEB,Major Hydro,1,390.039
+2024,Oct,CEB,Thermal Oil,0,205.896
+2024,Oct,CEB,Thermal Coal,0,440.089
+2024,Oct,CEB,Wind (Mannar),1,30.738
+2024,Oct,IPP,Mini Hydro,1,127.706
+2024,Oct,IPP,Wind,1,25.878
+2024,Oct,IPP,Solar (Grid),1,22.827
+2024,Oct,IPP,Solar (Rooftop),1,85.666
+2024,Oct,IPP,Dendro,1,6.374
+2024,Oct,IPP,Biomass,1,0.583
+2024,Oct,IPP,Municipal Waste,1,4.61
+2024,Oct,IPP,Thermal Oil,0,134.756
+2024,Nov,CEB,Major Hydro,1,499.794
+2024,Nov,CEB,Thermal Oil,0,117.073
+2024,Nov,CEB,Thermal Coal,0,391.965
+2024,Nov,CEB,Wind (Mannar),1,18.557
+2024,Nov,IPP,Mini Hydro,1,189.425
+2024,Nov,IPP,Wind,1,17.86
+2024,Nov,IPP,Solar (Grid),1,18.315
+2024,Nov,IPP,Solar (Rooftop),1,87.303
+2024,Nov,IPP,Dendro,1,8.1
+2024,Nov,IPP,Biomass,1,0.381
+2024,Nov,IPP,Municipal Waste,1,6.611
+2024,Nov,IPP,Thermal Oil,0,37.768
+2024,Dec,CEB,Major Hydro,1,692.808
+2024,Dec,CEB,Thermal Oil,0,61.484
+2024,Dec,CEB,Thermal Coal,0,372.261
+2024,Dec,CEB,Wind (Mannar),1,18.232
+2024,Dec,IPP,Mini Hydro,1,149.663
+2024,Dec,IPP,Wind,1,18.577
+2024,Dec,IPP,Solar (Grid),1,20.337
+2024,Dec,IPP,Solar (Rooftop),1,85.762
+2024,Dec,IPP,Dendro,1,9.572
+2024,Dec,IPP,Biomass,1,0.269
+2024,Dec,IPP,Municipal Waste,1,1.633
+2024,Dec,IPP,Thermal Oil,0,32.53
+2023,Jan,CEB,Major Hydro,1,330.062
+2023,Jan,CEB,Thermal Oil,0,176.908
+2023,Jan,CEB,Thermal Coal,0,514.042
+2023,Jan,CEB,Wind (Mannar),1,25.158
+2023,Jan,IPP,Mini Hydro,1,81.454
+2023,Jan,IPP,Wind,1,22.249
+2023,Jan,IPP,Solar (Grid),1,17.35
+2023,Jan,IPP,Solar (Rooftop),1,47.346
+2023,Jan,IPP,Dendro,1,4.809
+2023,Jan,IPP,Biomass,1,1.789
+2023,Jan,IPP,Municipal Waste,1,4.758
+2023,Jan,IPP,Thermal Oil,0,55.802
+2023,Feb,CEB,Major Hydro,1,271.81
+2023,Feb,CEB,Thermal Oil,0,107.836
+2023,Feb,CEB,Thermal Coal,0,590.102
+2023,Feb,CEB,Wind (Mannar),1,19.222
+2023,Feb,IPP,Mini Hydro,1,62.02
+2023,Feb,IPP,Wind,1,18.543
+2023,Feb,IPP,Solar (Grid),1,17.935
+2023,Feb,IPP,Solar (Rooftop),1,48.959
+2023,Feb,IPP,Dendro,1,5.082
+2023,Feb,IPP,Biomass,1,1.278
+2023,Feb,IPP,Municipal Waste,1,5.481
+2023,Feb,IPP,Thermal Oil,0,75.372
+2023,Mar,CEB,Major Hydro,1,319.86
+2023,Mar,CEB,Thermal Oil,0,198.714
+2023,Mar,CEB,Thermal Coal,0,569.778
+2023,Mar,CEB,Wind (Mannar),1,15.822
+2023,Mar,IPP,Mini Hydro,1,70.254
+2023,Mar,IPP,Wind,1,13.785
+2023,Mar,IPP,Solar (Grid),1,20.535
+2023,Mar,IPP,Solar (Rooftop),1,58.604
+2023,Mar,IPP,Dendro,1,5.29
+2023,Mar,IPP,Biomass,1,2.841
+2023,Mar,IPP,Municipal Waste,1,2.884
+2023,Mar,IPP,Thermal Oil,0,139.01
+2023,Apr,CEB,Major Hydro,1,280.412
+2023,Apr,CEB,Thermal Oil,0,190.832
+2023,Apr,CEB,Thermal Coal,0,512.541
+2023,Apr,CEB,Wind (Mannar),1,9.834
+2023,Apr,IPP,Mini Hydro,1,76.649
+2023,Apr,IPP,Wind,1,7.888
+2023,Apr,IPP,Solar (Grid),1,20.496
+2023,Apr,IPP,Solar (Rooftop),1,59.423
+2023,Apr,IPP,Dendro,1,5.368
+2023,Apr,IPP,Biomass,1,2.722
+2023,Apr,IPP,Municipal Waste,1,3.12
+2023,Apr,IPP,Thermal Oil,0,147.42
+2023,May,CEB,Major Hydro,1,279.186
+2023,May,CEB,Thermal Oil,0,197.648
+2023,May,CEB,Thermal Coal,0,560.521
+2023,May,CEB,Wind (Mannar),1,41.079
+2023,May,IPP,Mini Hydro,1,121.13
+2023,May,IPP,Wind,1,38.916
+2023,May,IPP,Solar (Grid),1,19.826
+2023,May,IPP,Solar (Rooftop),1,52.976
+2023,May,IPP,Dendro,1,5.282
+2023,May,IPP,Biomass,1,2.492
+2023,May,IPP,Municipal Waste,1,6.322
+2023,May,IPP,Thermal Oil,0,99.453
+2023,Jun,CEB,Major Hydro,1,256.817
+2023,Jun,CEB,Thermal Oil,0,242.625
+2023,Jun,CEB,Thermal Coal,0,430.521
+2023,Jun,CEB,Wind (Mannar),1,52.882
+2023,Jun,IPP,Mini Hydro,1,116.511
+2023,Jun,IPP,Wind,1,70.386
+2023,Jun,IPP,Solar (Grid),1,20.615
+2023,Jun,IPP,Solar (Rooftop),1,51.532
+2023,Jun,IPP,Dendro,1,6.546
+2023,Jun,IPP,Biomass,1,2.137
+2023,Jun,IPP,Municipal Waste,1,7.875
+2023,Jun,IPP,Thermal Oil,0,137.001
+2023,Jul,CEB,Major Hydro,1,308.858
+2023,Jul,CEB,Thermal Oil,0,226.321
+2023,Jul,CEB,Thermal Coal,0,406.312
+2023,Jul,CEB,Wind (Mannar),1,52.442
+2023,Jul,IPP,Mini Hydro,1,108.132
+2023,Jul,IPP,Wind,1,68.006
+2023,Jul,IPP,Solar (Grid),1,20.72
+2023,Jul,IPP,Solar (Rooftop),1,52.825
+2023,Jul,IPP,Dendro,1,6.234
+2023,Jul,IPP,Biomass,1,2.902
+2023,Jul,IPP,Municipal Waste,1,7.379
+2023,Jul,IPP,Thermal Oil,0,149.691
+2023,Aug,CEB,Major Hydro,1,252.268
+2023,Aug,CEB,Thermal Oil,0,388.696
+2023,Aug,CEB,Thermal Coal,0,370.048
+2023,Aug,CEB,Wind (Mannar),1,52.839
+2023,Aug,IPP,Mini Hydro,1,42.444
+2023,Aug,IPP,Wind,1,58.03
+2023,Aug,IPP,Solar (Grid),1,23.695
+2023,Aug,IPP,Solar (Rooftop),1,61.073
+2023,Aug,IPP,Dendro,1,6.814
+2023,Aug,IPP,Biomass,1,2.921
+2023,Aug,IPP,Municipal Waste,1,8.116
+2023,Aug,IPP,Thermal Oil,0,186.135
+2023,Sep,CEB,Major Hydro,1,266.529
+2023,Sep,CEB,Thermal Oil,0,214.603
+2023,Sep,CEB,Thermal Coal,0,370.743
+2023,Sep,CEB,Wind (Mannar),1,62.658
+2023,Sep,IPP,Mini Hydro,1,135.982
+2023,Sep,IPP,Wind,1,72.83
+2023,Sep,IPP,Solar (Grid),1,17.386
+2023,Sep,IPP,Solar (Rooftop),1,50.525
+2023,Sep,IPP,Dendro,1,6.502
+2023,Sep,IPP,Biomass,1,2.286
+2023,Sep,IPP,Municipal Waste,1,7.275
+2023,Sep,IPP,Thermal Oil,0,104.139
+2023,Oct,CEB,Major Hydro,1,548.531
+2023,Oct,CEB,Thermal Oil,0,62.276
+2023,Oct,CEB,Thermal Coal,0,395.39
+2023,Oct,CEB,Wind (Mannar),1,24.457
+2023,Oct,IPP,Mini Hydro,1,192.501
+2023,Oct,IPP,Wind,1,22.582
+2023,Oct,IPP,Solar (Grid),1,17.838
+2023,Oct,IPP,Solar (Rooftop),1,49.146
+2023,Oct,IPP,Dendro,1,6.398
+2023,Oct,IPP,Biomass,1,1.836
+2023,Oct,IPP,Municipal Waste,1,4.537
+2023,Oct,IPP,Thermal Oil,0,19.995
+2023,Nov,CEB,Major Hydro,1,721.496
+2023,Nov,CEB,Thermal Oil,0,11.01
+2023,Nov,CEB,Thermal Coal,0,257.028
+2023,Nov,CEB,Wind (Mannar),1,10.553
+2023,Nov,IPP,Mini Hydro,1,198.458
+2023,Nov,IPP,Wind,1,8.11
+2023,Nov,IPP,Solar (Grid),1,16.281
+2023,Nov,IPP,Solar (Rooftop),1,52.59
+2023,Nov,IPP,Dendro,1,3.45
+2023,Nov,IPP,Biomass,1,1.38
+2023,Nov,IPP,Municipal Waste,1,7.582
+2023,Nov,IPP,Thermal Oil,0,13.299
+2023,Dec,CEB,Major Hydro,1,756.695
+2023,Dec,CEB,Thermal Oil,0,23.062
+2023,Dec,CEB,Thermal Coal,0,173.743
+2023,Dec,CEB,Wind (Mannar),1,30.473
+2023,Dec,IPP,Mini Hydro,1,172.24
+2023,Dec,IPP,Wind,1,25.479
+2023,Dec,IPP,Solar (Grid),1,14.758
+2023,Dec,IPP,Solar (Rooftop),1,47.004
+2023,Dec,IPP,Dendro,1,6.995
+2023,Dec,IPP,Biomass,1,0.497
+2023,Dec,IPP,Municipal Waste,1,7.508
+2023,Dec,IPP,Thermal Oil,0,32.763

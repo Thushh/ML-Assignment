@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Plant Output Predictor</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <h1>Renewable plant output predictor</h1>
+  </div>
+</header>
+
+<main class="wrap grid">
+  <section class="card">
+    <form id="form" autocomplete="off">
+      <div class="fields">
+        <label class="full">Plant (optional: fills the values below)
+          <select id="plant">
+            <option value="">— none —</option>
+            {% for p in plants %}<option>{{ p }}</option>{% endfor %}
+          </select>
+        </label>
+        <label>Technology
+          <select name="category" id="category">
+            {% for c in categories %}<option>{{ c }}</option>{% endfor %}
+          </select>
+        </label>
+        <label>Installed capacity (MW)
+          <input name="capacity_mw" id="capacity_mw" type="number" step="any" min="0" required value="2.0">
+        </label>
+        <label>Year
+          <select name="year" id="year">
+            <optgroup label="Recorded (autofill + actual)">
+              {% for y in [2023, 2024] %}<option>{{ y }}</option>{% endfor %}
+            </optgroup>
+            <optgroup label="Forecast (enter history)">
+              {% for y in [2026, 2027, 2028] %}<option {% if y == 2026 %}selected{% endif %}>{{ y }}</option>{% endfor %}
+            </optgroup>
+          </select>
+        </label>
+        <label>Month
+          <select name="month" id="month">
+            {% for m in ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"] %}
+            <option value="{{ loop.index }}">{{ m }}</option>{% endfor %}
+          </select>
+        </label>
+        <label>Generation last month (GWh)
+          <input name="gen_lag1_gwh" id="gen_lag1_gwh" type="number" step="any" min="0">
+        </label>
+        <label>Generation 2 months ago (GWh)
+          <input name="gen_lag2_gwh" id="gen_lag2_gwh" type="number" step="any" min="0">
+        </label>
+        <label>Generation 3 months ago (GWh)
+          <input name="gen_lag3_gwh" id="gen_lag3_gwh" type="number" step="any" min="0">
+        </label>
+        <label>Same month last year (GWh)
+          <input name="gen_lag12_gwh" id="gen_lag12_gwh" type="number" step="any" min="0">
+        </label>
+        <label>National major hydro last month (GWh)
+          <input name="nat_hydro_lag1_gwh" id="nat_hydro_lag1_gwh" type="number" step="any" min="0">
+        </label>
+        <label>Plant's average capacity factor (%)
+          <input name="plant_mean_cf_pct" id="plant_mean_cf_pct" type="number" step="any" min="0" max="100">
+        </label>
+      </div>
+      <button type="submit" class="primary">Predict</button>
+    </form>
+  </section>
+
+  <section class="card" id="resultCard">
+    <div id="empty" class="empty">Select the values and press <b>Predict</b>.</div>
+    <div id="result" hidden>
+      <div class="verdict">
+        <span class="badge" id="badge"></span>
+        <div>
+          <div class="big" id="verdictText"></div>
+          <div class="muted" id="verdictSub"></div>
+        </div>
+      </div>
+      <div id="bars"></div>
+      <p class="muted model-line">Model: {{ model_name }}</p>
+    </div>
+    <div id="error" class="error" hidden></div>
+  </section>
+</main>
+
+<script>
+  const CLASSES = ["Low", "Moderate", "High"];
+  const ICON = {Low: "▼", Moderate: "■", High: "▲"};
+  const $ = (id) => document.getElementById(id);
+  const FIELDS = ["category","capacity_mw","gen_lag1_gwh","gen_lag2_gwh","gen_lag3_gwh","gen_lag12_gwh","nat_hydro_lag1_gwh","plant_mean_cf_pct"];
+
+  // Choosing a plant (or changing the month for a chosen plant) fills its recorded values.
+  async function fillFromPlant() {
+    const plant = $("plant").value;
+    if (!plant) return;
+    const r = await fetch(`/api/plant?plant=${encodeURIComponent(plant)}&year=${$("year").value}&month=${$("month").value}`);
+    const d = await r.json();
+    if (!d.error) FIELDS.forEach(f => { $(f).value = d[f] ?? ""; });
+  }
+  ["plant", "year", "month"].forEach(id => $(id).addEventListener("change", fillFromPlant));
+
+  $("form").onsubmit = async (e) => {
+    e.preventDefault();
+    const body = Object.fromEntries(new FormData($("form")).entries());
+    body.plant_id = $("plant").value;
+    const r = await fetch("/api/predict", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body)});
+    const d = await r.json();
+    $("empty").hidden = true;
+    if (d.error) { $("error").textContent = d.error; $("error").hidden = false; $("result").hidden = true; return; }
+    $("error").hidden = true; $("result").hidden = false;
+
+    const cls = d.class;
+    $("badge").className = "badge c" + d.class_index;
+    $("badge").textContent = ICON[cls] + " " + cls;
+    $("verdictText").textContent = `${cls} output expected`;
+    $("verdictSub").textContent = `Expected generation ${d.expected_generation} · confidence ${(d.probabilities[cls] * 100).toFixed(0)}%`;
+    $("bars").innerHTML = CLASSES.map((c, i) => {
+      const p = d.probabilities[c] * 100;
+      return `<div class="bar"><span class="lbl">${c}</span>
+        <span class="track"><span class="fill c${i}" style="width:${p}%"></span></span>
+        <span class="val">${p.toFixed(1)}%</span></div>`;
+    }).join("");
+  };
+</script>
+</body>
+</html>

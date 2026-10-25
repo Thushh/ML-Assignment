@@ -1,0 +1,6 @@
+,accuracy,balanced_accuracy,macro_f1,weighted_f1,log_loss,roc_auc_ovr,fit_seconds,time_cv_macro_f1
+Persistence baseline,0.7177,0.6988,0.6983,0.7166,,,0.0000,
+Random Forest,0.6949,0.6729,0.6685,0.6904,0.6806,0.8499,2.8122,0.5873
+XGBoost,0.6989,0.6868,0.6715,0.6921,0.7110,0.8552,1.4008,0.5781
+Soft Voting (RF+XGB),0.7076,0.6951,0.6823,0.7015,0.6739,0.8559,4.1217,0.5840
+Stacking (RF+XGB -> LogReg),0.7050,0.6824,0.6775,0.6997,0.7040,0.8523,21.4424,0.5711

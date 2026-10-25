@@ -1,0 +1,76 @@
+{
+  "raw_rows": 7968,
+  "raw_null_values": 0,
+  "dropped_aggregate_rows(Other Renewables)": 24,
+  "name_aliases_applied": {
+    "Dehiattakandiya DPP": "Dehiattakandiya",
+    "Energy Waste (Munic-": "to Energy Waste",
+    "Anuradhapura 2 SBSII(90)": "Anuradhapura 2 SBSII(90) SPP",
+    "Anuradhapura 3 SBSII(90)": "Anuradhapura 3 SBSII(90) SPP",
+    "Anuradhapura 4 SBSII(90)": "Anuradhapura 4 SBSII(90) SPP",
+    "Deegalahinna Cascade": "Deegalahinna Cascade II MHP",
+    "Horana 2 (2019/001/C-": "Horana 2 (2019/001/C-150) SPP",
+    "Mahiyanganaya 2 SB-": "Mahiyanganaya 2 SBSII(90) SPP",
+    "Mahiyanganaya 3 SB-": "Mahiyanganaya 3 SBSII(90) SPP",
+    "Mahiyanganaya 4 SB-": "Mahiyanganaya 4 SBSII(90) SPP",
+    "Mahiyanganaya 5 SB-": "Mahiyanganaya 5 SBSII(90) SPP",
+    "Mahiyanganaya 6 SB-": "Mahiyanganaya 6 SBSII(90) SPP",
+    "Mahiyanganaya 7 SB-": "Mahiyanganaya 7 SBSII(90) SPP"
+  },
+  "rows_renamed": 156,
+  "multi_unit_plants": [
+    "Gampola",
+    "Moragahakanda Reser-"
+  ],
+  "capacity_conflicts_fixed": {
+    "Ankanda MHP": {
+      "min": 1.0,
+      "max": 6.5
+    },
+    "Madapitiya MHP": {
+      "min": 0.6,
+      "max": 1.34
+    },
+    "Ritigaha Oya MHP-I": {
+      "min": 0.4,
+      "max": 0.5
+    }
+  },
+  "invalid_cf_gt_100pct_set_to_null": 31,
+  "never_operated_plants_dropped": [
+    "Dikkanda Bio Gas",
+    "Embilipitiya",
+    "Hemingford",
+    "Kaduruwan Dola",
+    "Kalawa Aragama",
+    "Kottamurich-",
+    "Malpel",
+    "Ninthaur",
+    "Panamure DPP",
+    "Thirappane"
+  ],
+  "pre_commissioning_rows_dropped": 99,
+  "clean_rows": 7677,
+  "clean_plants": 331,
+  "rows_without_valid_target_dropped": 31,
+  "rows_without_history_dropped(first month of each plant)": 333,
+  "missing_values_left_for_imputation": {
+    "cf_lag1": 18,
+    "cf_lag2": 349,
+    "cf_lag3": 682,
+    "cf_lag12": 3593,
+    "cf_trend": 363
+  },
+  "modelling_rows": 7313,
+  "class_distribution": {
+    "Low": 1880,
+    "Moderate": 3126,
+    "High": 2307
+  },
+  "class_thresholds": {
+    "Low": "CF < 0.15",
+    "Moderate": "0.15 <= CF < 0.4",
+    "High": "CF >= 0.4"
+  },
+  "holdout": "Kirkoswald 2024-12"
+}

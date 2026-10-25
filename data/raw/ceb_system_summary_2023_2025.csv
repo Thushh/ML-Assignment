@@ -1,0 +1,4 @@
+Year,Installed_Capacity_MW,Net_Generation_GWh,Renewable_Generation_GWh,Renewable_Share_Pct,Max_Demand_MW,Energy_Sold_GWh,TnD_Losses_Pct,Per_Capita_Consumption_kWh,Consumer_Accounts
+2023,4390,15576,7795,50.0,2415,14153,9.3,642,7024763
+2024,4651,16802,8982,53.5,2673,15191,9.5,693,7100733
+2025,4814,17812,10726,60.2,2896,16069,9.1,739,7184272

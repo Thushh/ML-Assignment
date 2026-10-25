@@ -1,0 +1,22 @@
+{
+  "plant_id": "Kirkoswald",
+  "category": "Mini Hydro",
+  "installed_capacity_mw": 4.0,
+  "year": 2024,
+  "month": 12,
+  "generation_gwh": 2.298,
+  "cf": 0.7721774193548387,
+  "cf_class": 2,
+  "nat_hydro_lag1_gwh": 499.794,
+  "cf_lag1": 0.8888888888888888,
+  "cf_lag2": 0.37701612903225806,
+  "cf_lag3": 0.3517361111111111,
+  "cf_lag12": null,
+  "cf_roll3": 0.5392137096774193,
+  "cf_trend": 0.5118727598566308,
+  "plant_mean_cf": 0.41631402892543745,
+  "month_sin": -0.5000000000000004,
+  "month_cos": 0.8660254037844384,
+  "season": "NE Monsoon",
+  "true_class": "High"
+}

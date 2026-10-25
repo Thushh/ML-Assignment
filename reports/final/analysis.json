@@ -1,0 +1,120 @@
+{
+  "period": "train (t <= 18)",
+  "rows": 5339,
+  "data_quality": {
+    "raw_rows": 7968,
+    "modelling_rows": 7313,
+    "removed": {
+      "Aggregate line (Other Renewables)": 24,
+      "Never-operated plants (10)": 168,
+      "Before commissioning": 99,
+      "Invalid CF > 100 % (target)": 31,
+      "No history (first month)": 333
+    },
+    "invalid_cf_set_to_null": 31,
+    "missing_pct_train": {
+      "cf_lag1": 0.2,
+      "cf_lag2": 6.3,
+      "cf_trend": 6.5,
+      "cf_lag3": 12.4,
+      "cf_lag12": 65.4
+    }
+  },
+  "target": {
+    "class_share": {
+      "Moderate": 0.429,
+      "Low": 0.286,
+      "High": 0.285
+    },
+    "chi2_season_vs_class": 548.3,
+    "chi2_p": 3.2037784831300242e-115,
+    "cramers_v": 0.227
+  },
+  "dynamics": {
+    "persistence_rate": 0.639,
+    "transition_matrix": [
+      [
+        0.595,
+        0.306,
+        0.099
+      ],
+      [
+        0.208,
+        0.63,
+        0.162
+      ],
+      [
+        0.062,
+        0.234,
+        0.704
+      ]
+    ],
+    "change_rate_by_month": {
+      "Jan": 0.408,
+      "Feb": 0.354,
+      "Mar": 0.28,
+      "Apr": 0.28,
+      "May": 0.534,
+      "Jun": 0.368,
+      "Jul": 0.241,
+      "Aug": 0.484,
+      "Sep": 0.587,
+      "Oct": 0.324,
+      "Nov": 0.203,
+      "Dec": 0.262
+    }
+  },
+  "relevance": {
+    "mutual_information": {
+      "plant_id": 0.3041,
+      "cf_lag1": 0.2912,
+      "cf_roll3": 0.1674,
+      "cf_trend": 0.1636,
+      "category": 0.1562,
+      "plant_mean_cf": 0.1409,
+      "installed_capacity_mw": 0.1229,
+      "cf_lag2": 0.1184,
+      "nat_hydro_lag1_gwh": 0.1118,
+      "cf_lag12": 0.1023,
+      "cf_lag3": 0.0848,
+      "season": 0.056,
+      "month_sin": 0.0515,
+      "month_cos": 0.0202
+    },
+    "kruskal_cf_lag1_H": 1858.2,
+    "kruskal_p": 0.0
+  },
+  "collinearity": {
+    "pairs_abs_rho_ge_0.7": {
+      "cf_lag2 ~ cf_roll3": 0.9,
+      "cf_lag1 ~ cf_roll3": 0.8,
+      "cf_roll3 ~ plant_mean_cf": 0.78,
+      "cf_lag3 ~ cf_roll3": 0.77
+    }
+  },
+  "categorical": {
+    "levels": {
+      "category": 6,
+      "season": 4,
+      "plant_id": 324
+    },
+    "eta_squared_cf": {
+      "category": 0.126,
+      "plant_id": 0.308,
+      "season": 0.108
+    }
+  },
+  "shift": {
+    "train_class_share": [
+      0.286,
+      0.429,
+      0.285
+    ],
+    "later_period_class_share": [
+      0.179,
+      0.422,
+      0.398
+    ],
+    "note": "only class SHARES of the later period are inspected (no model is fitted on it)"
+  }
+}
