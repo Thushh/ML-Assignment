@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: ceb-plant-output-predictor
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements-deploy.txt
+    # one worker: the model is loaded once at start-up and the free plan has 512 MB of memory
+    startCommand: gunicorn app.app:app --bind 0.0.0.0:$PORT --workers 1 --timeout 120
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9

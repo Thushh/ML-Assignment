@@ -1,0 +1,11 @@
+# Only what the web app needs at runtime (Render installs this; requirements.txt is for development).
+# Same pinned versions as requirements.txt, so the saved .pkl models load correctly.
+numpy==1.25.2
+pandas==2.1.1
+scipy==1.11.2
+scikit-learn==1.5.0
+xgboost==3.2.0
+catboost==1.2.10
+lightgbm==4.5.0
+flask==3.0.0
+gunicorn==23.0.0
