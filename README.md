@@ -1,7 +1,7 @@
 # Will a Sri Lankan renewable plant under-deliver next month?
 ### Random Forest vs XGBoost (+ Soft Voting and Stacking) on Ceylon Electricity Board data
 
-ML Lecture 7 class activity. The dataset is **local and public**: monthly generation of every small renewable (NCRE)
+ The dataset is **local and public**: monthly generation of every small renewable (NCRE)
 power plant connected to the CEB grid, 2023–2024.
 
 ![Front end](reports/figures/app_screenshot.png)
@@ -28,8 +28,6 @@ python app/app.py                         # 4. start the website -> open http://
 ```
 The trained models are already in `models/`, so step 4 works immediately. To rebuild everything from the raw CSVs, run `python run_all.py` (about 3 minutes).
 On macOS/Linux, activate with `source .venv/bin/activate`.
-
-New to the project? [`docs/PROJECT_GUIDE.md`](docs/PROJECT_GUIDE.md) explains every step, file and concept, following one real plant through the whole pipeline.
 
 ---
 
@@ -168,27 +166,7 @@ python app/app.py              # http://127.0.0.1:5000   (add /?demo to auto-run
 * text boxes for every model input (GWh history is converted to capacity factor exactly as in training)
 * **autofill** from any of the 331 CEB plants for a chosen month; when the real outcome is known, the app shows whether the prediction was right
 * probabilities, expected GWh range, and all four models side by side · JSON API `POST /api/predict`
-* built from the GenAI prompts in [`docs/genai_prompts.md`](docs/genai_prompts.md)
 
-## 9. Reproduce
 
-```bash
-pip install -r requirements.txt
-python run_all.py              # data prep -> EDA -> train/evaluate (~3 min) -> holdout inference
-python -m pytest -q            # smoke tests
-python notebooks/build_notebook.py && python -m nbconvert --to notebook --execute --inplace notebooks/CEB_NCRE_Ensemble_Activity.ipynb
-```
-
-```
-├── app/                 Flask front end (app.py, templates/, static/)
-├── data/raw/            CEB CSVs (unchanged)
-├── data/processed/      model_dataset.csv, cleaning_log.json, holdout_sample.json, plant_lookup.json
-├── docs/genai_prompts.md
-├── models/              model.pkl (soft voting), random_forest.pkl, xgboost.pkl, stacking.pkl, metadata.json
-├── notebooks/           CEB_NCRE_Ensemble_Activity.ipynb (executed) + its builder script
-├── reports/             metrics.csv, per-category / per-month / regime CSVs, figures/
-├── src/                 config, data_prep, features, models, train, eda, predict, plotting
-├── tests/test_smoke.py
-└── run_all.py
 ```
 The `.pkl` files were saved with scikit-learn 1.5.0 (pinned in `requirements.txt`). Each is under GitHub's 50 MB warning size.
