@@ -4,6 +4,7 @@ __pycache__/
 .pytest_cache/
 .venv/
 venv/
+catboost_info/
 .DS_Store
 
 # not part of the submission

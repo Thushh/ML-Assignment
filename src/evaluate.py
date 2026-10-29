@@ -99,8 +99,8 @@ def plot_comparison(table):
         ax.bar(xs, table.loc[name, cols], width=w - 0.02, color=MODEL_COLORS[name], label=name)
     ax.set_xticks(range(len(cols)), ["Accuracy", "Macro-F1", "Low-tier F1", "Tier-change accuracy"])
     ax.set_ylim(0, 1)
-    ax.set_title("Test performance, Jul-Dec 2024 (unseen months)")
-    ax.legend(ncol=3, fontsize=8, loc="upper center", bbox_to_anchor=(0.5, 1.22))
+    ax.set_title("Test performance, Jul-Dec 2024 (unseen months)", pad=48)
+    ax.legend(ncol=4, fontsize=8, loc="lower center", bbox_to_anchor=(0.5, 1.0))
     save_fig(fig, "model_comparison.png")
 
 
