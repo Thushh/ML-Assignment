@@ -10,17 +10,6 @@ its explanation.
 
 **Live app:** https://ceb-plant-predictor-ajfua4b6ahd0g0g3.indiasouthcentral-01.azurewebsites.net/
 
-## Where each marking criterion is
-
-| Guideline | Where |
-|---|---|
-| 1. Problem, data source, features, target, size, preprocessing, ethics | `src/preprocess.py`, sections 1–2 below |
-| 2. New algorithm and why | NGBoost (`NGBoostTiers` in `src/preprocess.py`, trained in `src/train.py`), section 3 |
-| 3. Split, hyperparameters, metrics, results | `src/train.py`, `src/evaluate.py`, `outputs/`, section 4 |
-| 4. Explainability (NGBoost importances, SHAP, LIME, PDP) | `src/explain.py`, `outputs/`, section 5 |
-| 5. Critical discussion | section 6 |
-| 7. Front end with predictions and explanations | `app/`, section 7 |
-
 ## Project structure
 
 ```
@@ -56,33 +45,7 @@ The trained models are already in `models/`, so the web app works without re-run
 
 ---
 
-## 1. Problem and data
-
-Sri Lanka targets 70 % renewable electricity by 2030. More than 330 small NCRE plants (mostly mini-hydro, plus solar,
-wind, biomass, dendro and waste-to-energy) feed the grid, and their output depends on the South-West (May–Sep) and
-North-East (Dec–Feb) monsoons. When they under-deliver, the CEB burns more imported coal and oil, so knowing the risk a
-month ahead helps planning.
-
-**Data source:** CEB *Sales & Generation Data Books 2023/2024* and *Statistical Digest*
-(<https://ceb.lk/publication-media/statistical-reports/en>), compiled into `data/raw/`:
-
-| File | Rows | Use |
-|---|---|---|
-| `ceb_ncre_plant_monthly.csv` | 7,968 | plant, technology, capacity (MW), monthly generation (GWh) |
-| `ceb_monthly_generation_by_source.csv` | 288 | national major-hydro output (a rainfall signal) |
-| `ceb_system_summary_2023_2025.csv` | 3 | context only |
-
-**Target:** the capacity factor, CF = GWh × 1000 ÷ (MW × hours in the month), grouped into three tiers:
-**Low** < 15 %, **Moderate** 15–40 %, **High** ≥ 40 %. After cleaning: **7,313 plant-months from 331 plants**
-(Low 26 %, Moderate 43 %, High 31 %).
-
-**Features (13), all from months *before* the one predicted:** CF 1, 2, 3 and 12 months ago; 3-month average; trend;
-the plant’s long-run average; month (sin/cos) and monsoon season; technology; capacity; national hydro last month.
-
-**Ethical use:** the data are public, aggregated statistics about power plants published by a state utility. They
-contain no personal or sensitive data.
-
-## 2. Preprocessing (`src/preprocess.py`)
+## 1. Preprocessing (`src/preprocess.py`)
 
 The raw file has no empty cells, but domain checks found hidden problems. Every decision is counted in
 `data/processed/cleaning_log.json`.
@@ -102,7 +65,7 @@ fitted on training data only. The EBM handles missing values and text categories
 
 ![](outputs/data_class_by_month.png)
 
-## 3. The algorithm: NGBoost (Natural Gradient Boosting)
+## 2. The algorithm: NGBoost (Natural Gradient Boosting)
 
 NGBoost (Duan et al., 2020, Stanford ML Group) is a boosting method for **probabilistic prediction**: instead of one
 number, it predicts a whole **probability distribution** for every input. Here it predicts next month’s capacity
@@ -131,16 +94,16 @@ probabilities are then read off the distribution: P(Low) = P(CF < 15 %), P(High)
 
 **Comparison models:**
 
-| Model | Taught? | Idea |
-|---|---|---|
-| Gaussian Process classifier | no | kernel method: predictions are a weighted similarity to training rows; probabilistic, but a black box and O(n³) to train |
-| Gaussian Naive Bayes | no | applies Bayes’ rule assuming the features are independent given the class |
-| Explainable Boosting Machine (EBM) | covered | additive glass-box model |
-| Random Forest | yes | bagged decision trees |
-| XGBoost | yes | gradient-boosted decision trees |
-| Same as last month | rule | next month’s tier = this month’s |
+| Model | Idea |
+|---|---|
+| Gaussian Process classifier | kernel method: predictions are a weighted similarity to training rows; probabilistic, but a black box and O(n³) to train |
+| Gaussian Naive Bayes | applies Bayes’ rule assuming the features are independent given the class |
+| Explainable Boosting Machine (EBM) | additive glass-box model |
+| Random Forest | bagged decision trees |
+| XGBoost | gradient-boosted decision trees |
+| Same as last month |  next month’s tier = this month’s |
 
-## 4. Training and evaluation
+## 3. Training and evaluation
 
 **Split by time** (a random split would let the model learn from the future):
 
@@ -244,34 +207,3 @@ consistent with mini-hydro plants depending on local rather than island-wide rai
 actual CF 77.2 % (High). SHAP: last month’s output (89 %) adds +35.6 percentage points to the 30 % baseline, and the
 rising trend +8.1.
 
-## 6. Critical discussion
-
-* **Limitations:** only 24 months (two monsoon cycles); no local rainfall or cloud data; the test covers only Jul–Dec 2024.
-  NGBoost assumes a Normal distribution, which is symmetric and can extend beyond the physical 0–100 % range (ranges
-  are clipped); a Beta distribution would fit a 0–1 quantity better. It cannot foresee sudden rain: Kirkoswald’s jump
-  at the monsoon onset in Nov-2024 fell outside its range (figure above).
-* **Data quality:** truncated names, impossible values and pre-commissioning zeros had to be repaired by rules;
-  some errors may remain undetected.
-* **Bias and fairness:** accuracy differs by technology (wind/solar better than mini-hydro) and plants with short
-  histories get less reliable predictions, because their history features are missing. Small technologies (dendro,
-  biomass, waste) have under 20 test rows each, so their scores are unreliable. If predictions were used to
-  prioritise dispatch or contracts, these plants could be treated unfairly; predictions should support, not replace,
-  operator judgement. NGBoost’s ranges help here, because they show when a prediction should not be trusted.
-* **Real-world impact and ethics:** better planning can reduce fossil-fuel back-up and cost. The data are public and
-  contain no personal information. The model should not be used to judge individual plant operators.
-
-## 7. Web app (`app/`)
-
-Flask + HTML. Users choose a plant (its CEB history fills in) or type values. The app returns the predicted tier,
-the probabilities, the **expected capacity factor with its 80 % likely range (in % and GWh)**, and a **“Why this
-prediction” chart of exact SHAP contributions**. For 2023–2024 months it also shows whether the prediction matched the
-recorded outcome. Deployed on Azure App Service via GitHub Actions.
-
-## References
-
-Duan, Avati, Ding, Thai, Basu, Ng & Schuler (2020), *NGBoost: Natural Gradient Boosting for Probabilistic Prediction*, ICML. ·
-Rasmussen & Williams (2006), *Gaussian Processes for Machine Learning*, MIT Press. ·
-Lou et al. (2013), *Accurate intelligible models with pairwise interactions*, KDD. ·
-Lundberg & Lee (2017), *A unified approach to interpreting model predictions*, NeurIPS. ·
-Lundberg et al. (2020), *From local explanations to global understanding with explainable AI for trees*, Nature Machine Intelligence. ·
-Ribeiro, Singh & Guestrin (2016), *“Why should I trust you?”*, KDD.
