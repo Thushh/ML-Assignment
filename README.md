@@ -1,172 +1,277 @@
 # Will a Sri Lankan renewable plant under-deliver next month?
-### Random Forest vs XGBoost (+ Soft Voting and Stacking) on Ceylon Electricity Board data
+### NGBoost (probabilistic boosting) on Ceylon Electricity Board data, 2023–2024
 
- The dataset is **local and public**: monthly generation of every small renewable (NCRE)
-power plant connected to the CEB grid, 2023–2024.
+Predicts, before each month starts, whether each of Sri Lanka’s 331 small renewable (NCRE) power plants will have
+**Low, Moderate or High** output. Main model: **NGBoost**, which predicts a full probability distribution of next
+month’s capacity factor. Compared with two other algorithms not taught in the module (**Gaussian Process, Naive Bayes**)
+and three covered in the module (**EBM, Random Forest, XGBoost**). Explained with NGBoost’s own importances, **SHAP,
+LIME and partial dependence**, and served by a **Flask web app** that shows each prediction, its likely range *and*
+its explanation.
 
-![Front end](reports/figures/app_screenshot.png)
+**Live app:** https://ceb-plant-predictor-ajfua4b6ahd0g0g3.indiasouthcentral-01.azurewebsites.net/
 
-| Guideline step | Where in this repo |
+## Where each marking criterion is
+
+| Guideline | Where |
 |---|---|
-| 1. Local Sri Lankan dataset | `data/raw/` (CEB statistical reports) |
-| 2. Preprocessing: null detection, imputation, transformations, normalising, scaling | `src/data_prep.py`, `src/models.py` (`make_preprocessor`) |
-| 3. Random Forest + XGBoost | `src/models.py` |
-| 4. Self-designed (non-default) parameters | `src/models.py` (reasoning beside every value), validation curve |
-| 5. Compare, strengths/limitations, interpretation | `notebooks/CEB_NCRE_Ensemble_Activity.ipynb` §5–6, section 6 below |
-| 6. Single-sample inference + `.pkl` | `src/predict.py`, `models/model.pkl`, notebook §7 |
-| 7. GenAI pickle loader + front end | `app/`, prompts in `docs/genai_prompts.md` |
-| Optional: Stacking (+ soft voting) | `src/models.py`, compared everywhere |
+| 1. Problem, data source, features, target, size, preprocessing, ethics | `src/preprocess.py`, sections 1–2 below |
+| 2. New algorithm and why | NGBoost (`NGBoostTiers` in `src/preprocess.py`, trained in `src/train.py`), section 3 |
+| 3. Split, hyperparameters, metrics, results | `src/train.py`, `src/evaluate.py`, `outputs/`, section 4 |
+| 4. Explainability (NGBoost importances, SHAP, LIME, PDP) | `src/explain.py`, `outputs/`, section 5 |
+| 5. Critical discussion | section 6 |
+| 7. Front end with predictions and explanations | `app/`, section 7 |
 
-## Quick start (Windows, Python 3.11)
+## Project structure
+
+```
+├── data/
+│   ├── raw/                 the 3 original CEB files (unchanged)
+│   └── processed/           cleaned dataset + cleaning log (made by preprocess.py)
+├── src/
+│   ├── preprocess.py        cleaning, feature engineering, encoding, normalisation (+ shared settings)
+│   ├── train.py             time split, hyperparameter tuning, model training, saves models/
+│   ├── evaluate.py          metrics, significance tests, confusion matrices, plots -> outputs/
+│   └── explain.py           NGBoost importances, SHAP, LIME, PDP -> outputs/
+├── models/                  trained models (.pkl) + metadata.json
+├── outputs/                 every table and figure used in the report
+├── app/                     Flask web app (app.py, templates/, static/)
+└── requirements.txt
+```
+
+## How to run (Windows, Python 3.11)
 
 ```powershell
-cd "path\to\Activity"
-python -m venv .venv                      # 1. create a private Python environment (once)
-.venv\Scripts\activate                    # 2. switch it on (every new terminal)
-pip install -r requirements.txt           # 3. install packages (once)
-python app/app.py                         # 4. start the website -> open http://127.0.0.1:5000
+python -m venv .venv
+.venv\Scripts\activate                 # macOS/Linux: source .venv/bin/activate
+pip install -r requirements.txt
+
+python -m src.preprocess               # 1. clean data, build features           (~10 s)
+python -m src.train                    # 2. split, tune, train, save models      (~7 min)
+python -m src.evaluate                 # 3. test-set metrics and plots           (~20 s)
+python -m src.explain                  # 4. SHAP / LIME / PDP explanations       (~30 s)
+
+python app/app.py                      # web app -> http://127.0.0.1:5000
 ```
-The trained models are already in `models/`, so step 4 works immediately. To rebuild everything from the raw CSVs, run `python run_all.py` (about 3 minutes).
-On macOS/Linux, activate with `source .venv/bin/activate`.
+The trained models are already in `models/`, so the web app works without re-running steps 1–4.
 
 ---
 
-## 1. Problem
+## 1. Problem and data
 
-Sri Lanka targets **70 % renewable electricity by 2030** (it reached 60 % in 2025). More than 330 small NCRE plants
-(mini-hydro, solar, wind, dendro, biomass, waste-to-energy) feed the grid, and their output rises and falls with the **South-West (May–Sep) and
-North-East (Dec–Feb) monsoons**. When these plants under-deliver, CEB has to burn more imported coal and oil.
+Sri Lanka targets 70 % renewable electricity by 2030. More than 330 small NCRE plants (mostly mini-hydro, plus solar,
+wind, biomass, dendro and waste-to-energy) feed the grid, and their output depends on the South-West (May–Sep) and
+North-East (Dec–Feb) monsoons. When they under-deliver, the CEB burns more imported coal and oil, so knowing the risk a
+month ahead helps planning.
 
-**Classification task:** before a month starts, predict each plant's **capacity-factor tier** for that month:
-
-| Class | CF = GWh ÷ (MW × hours) | Meaning |
-|---|---|---|
-| **Low** | < 15 % | drought, outage, maintenance |
-| **Moderate** | 15–40 % | normal solar/wind, average mini-hydro |
-| **High** | ≥ 40 % | monsoon-fed hydro, firm dendro/waste |
-
-Class balance after cleaning: Low 26 % · Moderate 43 % · High 31 % (7,313 plant-months, 331 plants).
-
-## 2. Data
+**Data source:** CEB *Sales & Generation Data Books 2023/2024* and *Statistical Digest*
+(<https://ceb.lk/publication-media/statistical-reports/en>), compiled into `data/raw/`:
 
 | File | Rows | Use |
 |---|---|---|
-| `ceb_ncre_plant_monthly.csv` | 7,968 | main dataset: plant, category, MW, monthly GWh (2023–2024) |
-| `ceb_monthly_generation_by_source.csv` | 288 | national generation by source: previous-month major-hydro (rainfall proxy), EDA |
-| `ceb_system_summary_2023_2025.csv` | 3 | national renewable share (context) |
+| `ceb_ncre_plant_monthly.csv` | 7,968 | plant, technology, capacity (MW), monthly generation (GWh) |
+| `ceb_monthly_generation_by_source.csv` | 288 | national major-hydro output (a rainfall signal) |
+| `ceb_system_summary_2023_2025.csv` | 3 | context only |
 
-Source: CEB *Sales & Generation Data Books 2023/2024* and *Statistical Digest*, <https://ceb.lk/publication-media/statistical-reports/en>.
+**Target:** the capacity factor, CF = GWh × 1000 ÷ (MW × hours in the month), grouped into three tiers:
+**Low** < 15 %, **Moderate** 15–40 %, **High** ≥ 40 %. After cleaning: **7,313 plant-months from 331 plants**
+(Low 26 %, Moderate 43 %, High 31 %).
 
-## 3. Preprocessing
+**Features (13), all from months *before* the one predicted:** CF 1, 2, 3 and 12 months ago; 3-month average; trend;
+the plant’s long-run average; month (sin/cos) and monsoon season; technology; capacity; national hydro last month.
 
-The raw CSV has **zero explicit nulls**. The problems are hidden, and domain knowledge is what reveals them. Every step is logged in `data/processed/cleaning_log.json`.
+**Ethical use:** the data are public, aggregated statistics about power plants published by a state utility. They
+contain no personal or sensitive data.
 
-| Issue | Treatment |
+## 2. Preprocessing (`src/preprocess.py`)
+
+The raw file has no empty cells, but domain checks found hidden problems. Every decision is counted in
+`data/processed/cleaning_log.json`.
+
+| Problem | Fix |
 |---|---|
-| `Other Renewables` is a 396 MW national aggregate | dropped (24 rows) |
-| 2023 book truncates names (`Mahiyanganaya 2 SB-`) | auto-mapped to the unique 2024 name (13 plants, 156 rows) |
-| One name, several units (Moragahakanda ×3, Gampola ×2) | unique `plant_id` per unit |
-| Capacity differs across years (Ankanda 1.0 vs 6.5 MW) | max reported nameplate (3 plants) |
-| **CF > 100 %**, physically impossible | **null detection**: set to NaN (31 rows) |
-| 10 plants with zero output in all 24 months | dropped (never operated) |
-| zeros before a plant's first output | dropped (99 rows; not outages) |
-| missing lags (`cf_lag1` 18, `cf_lag2` 349, `cf_lag3` 682, `cf_lag12` 3,593) | **median imputation + missing-indicator** inside the pipeline |
+| A national total (“Other Renewables”) listed as a plant | dropped (24 rows) |
+| 2023 book truncates plant names | mapped to the full 2024 names (13 plants) |
+| Capacity differs between years | largest reported capacity (3 plants) |
+| CF above 100 % (physically impossible) | set to missing, imputed later (31 values) |
+| Plants that never generated | dropped (10 plants) |
+| Zero output before a plant was built | dropped (99 rows) |
 
-**Transformations, normalisation and scaling**, all inside the saved sklearn `Pipeline`:
-target normalised to capacity factor · `log1p` on skewed MW and hydro GWh · cyclical month (`sin`/`cos`) ·
-Sri Lankan monsoon `season` · `StandardScaler` · one-hot `category`/`season`.
+**Encoding and normalisation** (`make_preprocessor`, used inside every model except the EBM): median imputation with
+missing-value flags, `log(1+x)` on skewed features, standard scaling, one-hot encoding of technology and season, all
+fitted on training data only. The EBM handles missing values and text categories natively.
 
-**Features:** `cf_lag1/2/3`, `cf_roll3`, `cf_trend`, `cf_lag12` (same month last year), `plant_mean_cf` (expanding mean of past months only),
-`nat_hydro_lag1_gwh`, `installed_capacity_mw`, `month_sin/cos`, `category`, `season`.
+![](outputs/data_class_by_month.png)
 
-**Split by time:** train Feb-2023 to Jun-2024 (5,339 rows) and test **Jul–Dec 2024** (1,973 rows). A random split would leak the future through lag features.
-One sample, **Kirkoswald Dec-2024**, is held out of both for the inference demo.
+## 3. The algorithm: NGBoost (Natural Gradient Boosting)
 
-| | |
+NGBoost (Duan et al., 2020, Stanford ML Group) is a boosting method for **probabilistic prediction**: instead of one
+number, it predicts a whole **probability distribution** for every input. Here it predicts next month’s capacity
+factor as
+
+&nbsp;&nbsp;&nbsp;&nbsp;CF ~ Normal(μ(x), σ(x))
+
+where both the mean μ and the spread σ are learned from the features. Each boosting round fits small regression trees
+to the **natural gradient** of the log-likelihood, which updates μ and σ together in a stable way. The tier
+probabilities are then read off the distribution: P(Low) = P(CF < 15 %), P(High) = P(CF ≥ 40 %), and Moderate in between.
+
+**Why it was selected:**
+* Planners need **how sure** a prediction is, not only the tier. NGBoost gives an expected capacity factor *and*
+  a likely range (e.g. “45 %, probably between 30 % and 60 %”), which the web app shows.
+* It learns from the **actual capacity factor** (a number) rather than only the tier label, so a plant at 39 % and
+  one at 16 % are not treated as the same “Moderate” example.
+* It is fast (seconds), uses all the data, and has **exact SHAP explanations** for both the mean and the uncertainty.
+
+**How it differs from standard models:**
+
+| Model | Difference |
 |---|---|
-| ![](reports/figures/eda_cf_heatmap.png) | ![](reports/figures/eda_national_generation_mix.png) |
+| Decision tree / Random Forest | predict a single class or value; no uncertainty estimate |
+| XGBoost / gradient boosting | boosts one prediction using the ordinary gradient; NGBoost boosts the *parameters of a distribution* (mean and spread) using the natural gradient |
+| Logistic regression | linear, gives class probabilities only; NGBoost is non-linear and models the capacity factor’s full distribution |
 
-## 4. Parameter engineering (no defaults)
+**Comparison models:**
 
-| | Random Forest | XGBoost |
+| Model | Taught? | Idea |
 |---|---|---|
-| trees | `n_estimators=500` (stable soft-vote probabilities) | `n_estimators=600`, `learning_rate=0.03` |
-| depth | `max_depth=14` | `max_depth=3`: first design was 5, changed after the time-ordered validation curve below |
-| leaf size | `min_samples_leaf=3`, `min_samples_split=6` | `min_child_weight=3` |
-| randomness | `max_features=0.5`, `max_samples=0.8` | `subsample=0.8`, `colsample_bytree=0.8` |
-| regularisation | n/a | `gamma=0.1`, `reg_lambda=2.0`, `reg_alpha=0.1` |
-| imbalance | `class_weight=None`: `balanced_subsample` was tried and lowered macro-F1 (the imbalance is mild) | n/a |
+| Gaussian Process classifier | no | kernel method: predictions are a weighted similarity to training rows; probabilistic, but a black box and O(n³) to train |
+| Gaussian Naive Bayes | no | applies Bayes’ rule assuming the features are independent given the class |
+| Explainable Boosting Machine (EBM) | covered | additive glass-box model |
+| Random Forest | yes | bagged decision trees |
+| XGBoost | yes | gradient-boosted decision trees |
+| Same as last month | rule | next month’s tier = this month’s |
 
-Ensembles: `VotingClassifier(voting="soft")` (the lecturer's pipeline) and `StackingClassifier` (RF + XGB → `LogisticRegression(C=0.5)`, 5-fold out-of-fold probabilities).
+## 4. Training and evaluation
 
-![](reports/figures/validation_curves_max_depth.png)
+**Split by time** (a random split would let the model learn from the future):
 
-## 5. Results: test set Jul–Dec 2024
+| Set | Months | Rows | Use |
+|---|---|---|---|
+| Train | Feb-2023 – Mar-2024 | 4,371 | fit candidate models |
+| Validation | Apr-2024 – Jun-2024 | 968 | choose hyperparameters |
+| Test | Jul-2024 – Dec-2024 | 1,973 | final evaluation only |
+| Hold-out | Kirkoswald, Dec-2024 | 1 | single-sample inference demo |
 
-| Model | Accuracy | Macro-F1 | Balanced acc. | ROC-AUC | Log-loss | Fit (s) |
+After tuning, each model is refitted on train + validation and evaluated once on the test months.
+
+**Hyperparameters** (grid searched on validation macro-F1, `outputs/validation_scores.csv`):
+
+| Model | Searched | Chosen | Best validation macro-F1 |
+|---|---|---|---|
+| **NGBoost** (Normal distribution, learning rate 0.03) | tree depth ∈ {3, 5}, boosting rounds ∈ {300, 800} | depth 3, 800 rounds | **0.698** |
+| Naive Bayes | variance smoothing ∈ {10⁻⁹, 10⁻³, 10⁻¹} | 10⁻⁹ | 0.695 |
+| EBM | interactions ∈ {0, 10}, learning rate ∈ {0.01, 0.04} | 10, 0.04 | 0.654 |
+| XGBoost (600 trees, lr 0.03) | max depth ∈ {3, 5} | 5 | 0.616 |
+| Random Forest (300 trees) | max depth ∈ {8, 14, none} | none | 0.613 |
+| Gaussian Process | kernel ∈ {RBF, Matérn ν=1.5}; length scale and amplitude fitted by marginal likelihood | Matérn | 0.513 |
+
+NGBoost scored best on the validation months, which supports choosing it **before** looking at the test months.
+The Gaussian Process is trained on a random sample of 2,000 rows, because its training cost grows with the cube of the
+number of rows; every other model uses all rows.
+
+**Metrics:** macro-F1 (main: weights the minority Low tier equally), accuracy, Low-tier F1, accuracy on months where
+the tier changed, log-loss and ROC-AUC (probability quality). For NGBoost also **interval coverage**: does an
+“80 % range” contain the actual capacity factor 80 % of the time? Significance: exact McNemar test and bootstrap 95 % CI.
+
+**Results on the test months** (`outputs/metrics.csv`):
+
+| Model | Accuracy | Macro-F1 | Low F1 | Tier changes | ROC-AUC | Log-loss |
 |---|---|---|---|---|---|---|
-| Persistence baseline (*same tier as last month*) | **0.718** | **0.698** | **0.699** | n/a | n/a | 0 |
-| Random Forest | 0.695 | 0.669 | 0.673 | 0.850 | 0.681 | 2.8 |
-| XGBoost | 0.699 | 0.672 | 0.687 | 0.855 | 0.711 | 1.4 |
-| **Soft Voting (RF+XGB)** | **0.708** | **0.682** | **0.695** | **0.856** | **0.674** | 4.1 |
-| Stacking (RF+XGB → LogReg) | 0.705 | 0.678 | 0.682 | 0.852 | 0.704 | 21.4 |
+| Same as last month (rule) | **0.718** | **0.698** | **0.615** | 0 % | n/a | n/a |
+| Naive Bayes | 0.694 | 0.620 | 0.370 | **47 %** | **0.858** | 1.985 |
+| Gaussian Process | 0.701 | 0.673 | 0.563 | 46 % | 0.840 | 0.750 |
+| EBM | 0.675 | 0.652 | 0.549 | 42 % | 0.844 | 0.806 |
+| Random Forest | 0.692 | 0.665 | 0.563 | 40 % | 0.848 | **0.686** |
+| XGBoost | 0.694 | 0.669 | 0.574 | 41 % | 0.850 | 0.738 |
+| **NGBoost** | 0.688 | 0.664 | 0.560 | 39 % | 0.846 | 0.732 |
+
+![](outputs/model_comparison.png)
+
+**NGBoost’s uncertainty** (`outputs/ngboost_uncertainty.csv`): its ranges are close to honest.
+
+| Range the model claims | 50 % | 80 % | 90 % | 95 % |
+|---|---|---|---|---|
+| Share of test months inside it | 49 % | 76 % | 87 % | 91 % |
 
 | | |
 |---|---|
-| ![](reports/figures/regime_change_accuracy.png) | ![](reports/figures/per_month_macro_f1.png) |
+| ![](outputs/ngboost_interval_calibration.png) | ![](outputs/ngboost_intervals_example.png) |
 
-![](reports/figures/confusion_matrices.png)
-![](reports/figures/feature_importance.png)
+**What the results indicate:**
+* Output tiers are sticky (65 % of months keep last month’s tier), so the simple rule is very strong overall.
+* The models add value where the rule fails: in months where a plant’s tier changes, the rule is always wrong while
+  the models catch 39–47 % of them. They also give probabilities (ROC-AUC ≈ 0.85) for ranking plants by risk.
+* **NGBoost is statistically tied with the best models** (`outputs/significance.csv`): the macro-F1 differences to the
+  Gaussian Process (−0.010), XGBoost (−0.006), Random Forest (−0.002) and EBM (+0.012) are all within noise (bootstrap
+  95 % intervals include 0; McNemar p ≥ 0.16). It is **clearly better than Naive Bayes** (+0.044, CI +0.016 to +0.070),
+  whose independence assumption breaks on the correlated history features.
+* **Mini-hydro, the largest and hardest group** (1,276 of 1,973 test rows): NGBoost is the best machine-learning model
+  there (macro-F1 0.575 vs 0.529–0.546 for the others), likely because it learns from the capacity factor itself
+  rather than only the tier label.
+* **What NGBoost adds that the others cannot:** a calibrated range for every prediction (the 80 % range holds 76 % of
+  the time). A planner sees not just “High” but “expected 75 %, probably 58–90 %”.
+* **Why NGBoost is the chosen model:** best on validation, tied with the best on test, best on mini-hydro, the only
+  model with honest uncertainty, fast (about a minute to train on all rows) and exactly explainable with SHAP.
 
-## 6. Interpretation
+![](outputs/confusion_matrices.png)
 
-* **Soft voting is the best ML model** on every metric. It combines RF's well-calibrated probabilities with XGBoost's
-  sharper boundaries. Stacking is close but costs 5× the training time for no gain on 5k rows.
-* **Persistence is a very strong baseline.** 72 % of plant-months keep last month's tier, so "same as last month" scores
-  macro-F1 0.698, slightly above every model. It is reported because hiding it would overstate the ML.
-* **The ensembles add value where planning needs it:**
-  * on the **557 tier-change months**, where persistence is always wrong, soft voting is right **42 %** of the time
-  * at **monsoon transitions** it clearly wins: **July 2024 0.82 vs 0.72** and **November 2024 0.71 vs 0.53** (macro-F1)
-  * **ROC-AUC 0.86**: plants can be ranked by P(Low) for maintenance and dispatch planning, which a rule cannot do
-* **Drivers:** last month's CF, technology, same month last year and the plant's long-run mean. National hydro helps only a little: it is an island-wide signal, but mini-hydro responds to rain in its *own* catchment.
-* **By technology:** wind 0.75–0.82 and solar 0.70–0.72 macro-F1. **Mini-hydro is hardest (0.53–0.55)** because local rainfall is missing.
-* **Tried and rejected:** a gated hybrid (persistence unless the ensemble is confident). The gate chosen on the training-period
-  validation window scored 0.690 on test, below persistence, so it was dropped (tuning it on the test set would be leakage).
+## 5. Explainability (`src/explain.py`)
 
-| Model | Strengths | Limitations |
-|---|---|---|
-| Random Forest | robust, little tuning, best-calibrated single model, free OOB estimate (0.80) | 33 MB pickle; weaker on the Low class |
-| XGBoost | best single-model ROC-AUC, shallow boosted trees capture season × lag effects, 2 MB pickle | more knobs; depth-sensitive; slightly over-confident |
-| Soft Voting | best overall, simple, stable | 2× inference cost; cannot learn which model to trust per season |
-| Stacking | learns combination weights | 5× training cost; no gain on a small dataset |
+* **NGBoost’s own feature importances**, separately for the expected output and for the uncertainty.
+* **SHAP** (exact TreeSHAP for tree ensembles): global influence on the mean and on the uncertainty, a beeswarm of how
+  feature *values* move the expected capacity factor, and an exact breakdown of one prediction.
+* **LIME:** local surrogate model for a single prediction, as an independent check.
+* **Partial dependence (PDP):** average effect of one feature on P(Low) and P(High).
 
-**Limitations of the study:** only 24 months (two monsoon cycles), no catchment-level rainfall, and the test covers only the second half of 2024.
-**Next steps:** add Department of Meteorology district rainfall, and a longer history (2019–2022 data books).
+![](outputs/shap_global.png)
 
-## 7. Single-sample inference
+| | |
+|---|---|
+| ![](outputs/shap_beeswarm_mean.png) | ![](outputs/shap_local_holdout.png) |
 
-```text
-$ python -m src.predict
-Left-out sample: Kirkoswald (Mini Hydro, 4.0 MW), 2024-12
-Actual generation 2.298 GWh -> CF 77.2% -> TRUE class: High
+![](outputs/pdp.png)
 
-Random Forest                  -> High  {'Low': 0.0657, 'Moderate': 0.0293, 'High': 0.9049}  (expected 1.190 - 2.976 GWh)
-XGBoost                        -> High  {'Low': 0.01,   'Moderate': 0.0322, 'High': 0.9578}  (expected 1.190 - 2.976 GWh)
-Soft Voting (RF+XGB)           -> High  {'Low': 0.0379, 'Moderate': 0.0308, 'High': 0.9314}  (expected 1.190 - 2.976 GWh)
-Stacking (RF+XGB -> LogReg)    -> High  {'Low': 0.0121, 'Moderate': 0.0391, 'High': 0.9488}  (expected 1.190 - 2.976 GWh)
-```
-New data points: `python -m src.predict --category Solar --capacity 1 --year 2025 --month 1 --lag1 0.118 --hydro 692.8`
+**What the model has learned / most influential features:**
+* The **expected output** is driven by last month’s output, the same month last year and the trend (then the plant’s
+  long-run average and the time of year).
+* The **uncertainty** is driven mainly by the **technology**: mini-hydro output is far less predictable than solar.
 
-## 8. Front end
+**Does it match domain knowledge? Yes.** Output is persistent month to month; the same month last year carries the
+monsoon cycle; a rising trend signals arriving rains; and run-of-river mini-hydro, which depends on rain in its own
+catchment, is much more uncertain than solar, whose output is steady. The national hydro signal has little influence,
+consistent with mini-hydro plants depending on local rather than island-wide rain.
 
-```bash
-pip install -r requirements.txt
-python app/app.py              # http://127.0.0.1:5000   (add /?demo to auto-run the held-out sample)
-```
-* text boxes for every model input (GWh history is converted to capacity factor exactly as in training)
-* **autofill** from any of the 331 CEB plants for a chosen month; when the real outcome is known, the app shows whether the prediction was right
-* probabilities, expected GWh range, and all four models side by side · JSON API `POST /api/predict`
+**Hold-out check:** Kirkoswald (4 MW mini-hydro), Dec-2024 → NGBoost expects **CF 74.5 % ± 12 %** → **High (P = 1.00)**;
+actual CF 77.2 % (High). SHAP: last month’s output (89 %) adds +35.6 percentage points to the 30 % baseline, and the
+rising trend +8.1.
 
+## 6. Critical discussion
 
-```
-The `.pkl` files were saved with scikit-learn 1.5.0 (pinned in `requirements.txt`). Each is under GitHub's 50 MB warning size.
+* **Limitations:** only 24 months (two monsoon cycles); no local rainfall or cloud data; the test covers only Jul–Dec 2024.
+  NGBoost assumes a Normal distribution, which is symmetric and can extend beyond the physical 0–100 % range (ranges
+  are clipped); a Beta distribution would fit a 0–1 quantity better. It cannot foresee sudden rain: Kirkoswald’s jump
+  at the monsoon onset in Nov-2024 fell outside its range (figure above).
+* **Data quality:** truncated names, impossible values and pre-commissioning zeros had to be repaired by rules;
+  some errors may remain undetected.
+* **Bias and fairness:** accuracy differs by technology (wind/solar better than mini-hydro) and plants with short
+  histories get less reliable predictions, because their history features are missing. Small technologies (dendro,
+  biomass, waste) have under 20 test rows each, so their scores are unreliable. If predictions were used to
+  prioritise dispatch or contracts, these plants could be treated unfairly; predictions should support, not replace,
+  operator judgement. NGBoost’s ranges help here, because they show when a prediction should not be trusted.
+* **Real-world impact and ethics:** better planning can reduce fossil-fuel back-up and cost. The data are public and
+  contain no personal information. The model should not be used to judge individual plant operators.
+
+## 7. Web app (`app/`)
+
+Flask + HTML. Users choose a plant (its CEB history fills in) or type values. The app returns the predicted tier,
+the probabilities, the **expected capacity factor with its 80 % likely range (in % and GWh)**, and a **“Why this
+prediction” chart of exact SHAP contributions**. For 2023–2024 months it also shows whether the prediction matched the
+recorded outcome. Deployed on Azure App Service via GitHub Actions.
+
+## References
+
+Duan, Avati, Ding, Thai, Basu, Ng & Schuler (2020), *NGBoost: Natural Gradient Boosting for Probabilistic Prediction*, ICML. ·
+Rasmussen & Williams (2006), *Gaussian Processes for Machine Learning*, MIT Press. ·
+Lou et al. (2013), *Accurate intelligible models with pairwise interactions*, KDD. ·
+Lundberg & Lee (2017), *A unified approach to interpreting model predictions*, NeurIPS. ·
+Lundberg et al. (2020), *From local explanations to global understanding with explainable AI for trees*, Nature Machine Intelligence. ·
+Ribeiro, Singh & Guestrin (2016), *“Why should I trust you?”*, KDD.

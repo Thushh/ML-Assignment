@@ -1,0 +1,61 @@
+{
+  "plant": "Kirkoswald",
+  "month": "2024-12",
+  "actual": "2.298 GWh, CF 77.2% -> High",
+  "predictions": {
+    "NGBoost": {
+      "class": "High",
+      "probabilities": {
+        "Low": 0.0,
+        "Moderate": 0.003,
+        "High": 0.997
+      },
+      "expected_generation": "1.190 - 2.976 GWh"
+    },
+    "Gaussian Process": {
+      "class": "High",
+      "probabilities": {
+        "Low": 0.277,
+        "Moderate": 0.065,
+        "High": 0.658
+      },
+      "expected_generation": "1.190 - 2.976 GWh"
+    },
+    "Naive Bayes": {
+      "class": "High",
+      "probabilities": {
+        "Low": 0.0,
+        "Moderate": 0.0,
+        "High": 1.0
+      },
+      "expected_generation": "1.190 - 2.976 GWh"
+    },
+    "EBM": {
+      "class": "High",
+      "probabilities": {
+        "Low": 0.032,
+        "Moderate": 0.072,
+        "High": 0.896
+      },
+      "expected_generation": "1.190 - 2.976 GWh"
+    },
+    "Random Forest": {
+      "class": "High",
+      "probabilities": {
+        "Low": 0.061,
+        "Moderate": 0.036,
+        "High": 0.903
+      },
+      "expected_generation": "1.190 - 2.976 GWh"
+    },
+    "XGBoost": {
+      "class": "High",
+      "probabilities": {
+        "Low": 0.009999999776482582,
+        "Moderate": 0.017000000923871994,
+        "High": 0.9729999899864197
+      },
+      "expected_generation": "1.190 - 2.976 GWh"
+    }
+  }
+}

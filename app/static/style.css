@@ -92,3 +92,12 @@ figure img { width: 100%; border: 1px solid var(--border); border-radius: 8px; b
 figcaption { color: var(--ink3); font-size: 12.5px; margin-top: 4px; }
 .foot { color: var(--ink3); font-size: 12.5px; padding: 24px 16px 40px; }
 code { font-size: 12.5px; }
+
+/* "Why this prediction": exact EBM contributions */
+.bar.why { grid-template-columns: 190px 1fr 56px; }
+.fill.pos { background: var(--high); }
+.fill.neg { background: var(--low); }
+.pos-txt { color: var(--high); font-weight: 600; }
+.neg-txt { color: var(--low); font-weight: 600; }
+@media (max-width: 520px) { .bar.why { grid-template-columns: 120px 1fr 48px; } }
+.range { margin: 14px 0 4px; font-size: 14px; color: var(--ink2); }

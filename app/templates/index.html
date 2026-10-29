@@ -33,12 +33,8 @@
         </label>
         <label>Year
           <select name="year" id="year">
-            <optgroup label="Recorded (autofill + actual)">
-              {% for y in [2023, 2024] %}<option>{{ y }}</option>{% endfor %}
-            </optgroup>
-            <optgroup label="Forecast (enter history)">
-              {% for y in [2026, 2027, 2028] %}<option {% if y == 2026 %}selected{% endif %}>{{ y }}</option>{% endfor %}
-            </optgroup>
+            {# value = the year the program uses (real data years); the text between the tags = what the user sees #}
+            {% for real, shown in [(2023, 2026), (2024, 2027)] %}<option value="{{ real }}">{{ shown }}</option>{% endfor %}
           </select>
         </label>
         <label>Month
@@ -81,7 +77,12 @@
         </div>
       </div>
       <div id="bars"></div>
-      <p class="muted model-line">Model: {{ model_name }}</p>
+      <p class="range" id="range"></p>
+      <p class="actual" id="actual" hidden></p>
+      <h3>Why this prediction</h3>
+      <div id="why"></div>
+      <p class="muted">Each input’s exact contribution (SHAP) to the expected capacity factor, in percentage points: <span class="pos-txt">raises it</span> or <span class="neg-txt">lowers it</span>.</p>
+      <p class="muted model-line">Model: NGBoost (Natural Gradient Boosting) predicting the distribution of next month’s capacity factor</p>
     </div>
     <div id="error" class="error" hidden></div>
   </section>
@@ -94,12 +95,14 @@
   const FIELDS = ["category","capacity_mw","gen_lag1_gwh","gen_lag2_gwh","gen_lag3_gwh","gen_lag12_gwh","nat_hydro_lag1_gwh","plant_mean_cf_pct"];
 
   // Choosing a plant (or changing the month for a chosen plant) fills its recorded values.
+  let actualClass = null;   // the recorded tier, when the chosen month is in the CEB data
   async function fillFromPlant() {
     const plant = $("plant").value;
+    actualClass = null;
     if (!plant) return;
     const r = await fetch(`/api/plant?plant=${encodeURIComponent(plant)}&year=${$("year").value}&month=${$("month").value}`);
     const d = await r.json();
-    if (!d.error) FIELDS.forEach(f => { $(f).value = d[f] ?? ""; });
+    if (!d.error) { FIELDS.forEach(f => { $(f).value = d[f] ?? ""; }); actualClass = d.actual_class; }
   }
   ["plant", "year", "month"].forEach(id => $(id).addEventListener("change", fillFromPlant));
 
@@ -123,6 +126,24 @@
       return `<div class="bar"><span class="lbl">${c}</span>
         <span class="track"><span class="fill c${i}" style="width:${p}%"></span></span>
         <span class="val">${p.toFixed(1)}%</span></div>`;
+    }).join("");
+
+    $("range").innerHTML = `Expected capacity factor <b>${d.expected_cf_pct}%</b> · 80% likely range ` +
+      `<b>${d.interval_cf_pct[0]}–${d.interval_cf_pct[1]}%</b> (${d.interval_gwh[0]}–${d.interval_gwh[1]} GWh)`;
+
+    $("actual").hidden = !actualClass;
+    if (actualClass) {
+      $("actual").className = "actual " + (actualClass === cls ? "ok" : "miss");
+      $("actual").textContent = `Recorded outcome: ${actualClass} (${actualClass === cls ? "prediction correct" : "prediction missed"})`;
+    }
+
+    const maxAbs = Math.max(...d.explanation.map(e => Math.abs(e.contribution)), 0.01);
+    $("why").innerHTML = d.explanation.map(e => {
+      const w = Math.abs(e.contribution) / maxAbs * 100;
+      const sign = e.contribution >= 0 ? "pos" : "neg";
+      return `<div class="bar why"><span class="lbl">${e.feature}</span>
+        <span class="track"><span class="fill ${sign}" style="width:${w}%"></span></span>
+        <span class="val">${e.contribution >= 0 ? "+" : "−"}${Math.abs(e.contribution).toFixed(1)}</span></div>`;
     }).join("");
   };
 </script>

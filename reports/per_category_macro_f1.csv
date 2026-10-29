@@ -1,7 +1,0 @@
-,Random Forest,XGBoost,Soft Voting (RF+XGB),Stacking (RF+XGB -> LogReg),test_rows
-Mini Hydro,0.537,0.525,0.543,0.55,1276
-Wind,0.752,0.768,0.782,0.816,114
-Solar,0.708,0.708,0.719,0.703,542
-Biomass,0.461,0.495,0.455,0.443,18
-Dendro,0.301,0.301,0.301,0.301,17
-Municipal Waste,0.455,0.4,0.455,0.4,6

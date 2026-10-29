@@ -1,0 +1,493 @@
+{
+  "model": "NGBoost (models/ngboost.pkl), trained Feb-2023 .. Jun-2024",
+  "ngboost_importance": {
+    "installed_capacity_mw": {
+      "expected output (mean)": 0.0104,
+      "uncertainty (sd)": 0.0324
+    },
+    "nat_hydro_lag1_gwh": {
+      "expected output (mean)": 0.1144,
+      "uncertainty (sd)": 0.0527
+    },
+    "cf_lag1": {
+      "expected output (mean)": 0.2349,
+      "uncertainty (sd)": 0.1103
+    },
+    "cf_lag2": {
+      "expected output (mean)": 0.0247,
+      "uncertainty (sd)": 0.0281
+    },
+    "cf_lag3": {
+      "expected output (mean)": 0.0566,
+      "uncertainty (sd)": 0.0357
+    },
+    "cf_lag12": {
+      "expected output (mean)": 0.1061,
+      "uncertainty (sd)": 0.1043
+    },
+    "cf_roll3": {
+      "expected output (mean)": 0.0321,
+      "uncertainty (sd)": 0.0095
+    },
+    "cf_trend": {
+      "expected output (mean)": 0.1215,
+      "uncertainty (sd)": 0.1366
+    },
+    "plant_mean_cf": {
+      "expected output (mean)": 0.0807,
+      "uncertainty (sd)": 0.0695
+    },
+    "month_sin": {
+      "expected output (mean)": 0.0521,
+      "uncertainty (sd)": 0.0568
+    },
+    "month_cos": {
+      "expected output (mean)": 0.0627,
+      "uncertainty (sd)": 0.0401
+    },
+    "category": {
+      "expected output (mean)": 0.0742,
+      "uncertainty (sd)": 0.2985
+    },
+    "season": {
+      "expected output (mean)": 0.0296,
+      "uncertainty (sd)": 0.0257
+    }
+  },
+  "shap_mean_abs": {
+    "cf_lag1": {
+      "expected output (mean)": 0.0935,
+      "uncertainty (log sd)": 0.0641
+    },
+    "cf_lag12": {
+      "expected output (mean)": 0.0754,
+      "uncertainty (log sd)": 0.0928
+    },
+    "cf_trend": {
+      "expected output (mean)": 0.0356,
+      "uncertainty (log sd)": 0.0677
+    },
+    "plant_mean_cf": {
+      "expected output (mean)": 0.0126,
+      "uncertainty (log sd)": 0.0724
+    },
+    "month_cos": {
+      "expected output (mean)": 0.0099,
+      "uncertainty (log sd)": 0.0419
+    },
+    "category": {
+      "expected output (mean)": 0.0083,
+      "uncertainty (log sd)": 0.3519
+    },
+    "cf_lag3": {
+      "expected output (mean)": 0.0083,
+      "uncertainty (log sd)": 0.0161
+    },
+    "month_sin": {
+      "expected output (mean)": 0.0059,
+      "uncertainty (log sd)": 0.1221
+    },
+    "cf_roll3": {
+      "expected output (mean)": 0.0059,
+      "uncertainty (log sd)": 0.0088
+    },
+    "season": {
+      "expected output (mean)": 0.0057,
+      "uncertainty (log sd)": 0.0252
+    },
+    "nat_hydro_lag1_gwh": {
+      "expected output (mean)": 0.0039,
+      "uncertainty (log sd)": 0.0403
+    },
+    "cf_lag2": {
+      "expected output (mean)": 0.0033,
+      "uncertainty (log sd)": 0.0139
+    },
+    "installed_capacity_mw": {
+      "expected output (mean)": 0.0011,
+      "uncertainty (log sd)": 0.0085
+    }
+  },
+  "holdout": {
+    "plant": "Kirkoswald",
+    "month": "2024-12",
+    "actual_cf": 0.772,
+    "actual_tier": "High",
+    "expected_cf": 0.745,
+    "sd_cf": 0.124,
+    "predicted_tier": "High",
+    "probabilities": {
+      "Low": 0.0,
+      "Moderate": 0.003,
+      "High": 0.997
+    },
+    "shap_base_value": 0.301,
+    "shap_contributions": {
+      "cf_lag1": 0.3561,
+      "cf_trend": 0.0808,
+      "month_sin": -0.0166,
+      "plant_mean_cf": 0.0128,
+      "season": -0.0096,
+      "cf_roll3": 0.0071,
+      "cf_lag12": 0.0063,
+      "category": 0.0043,
+      "cf_lag3": 0.0014,
+      "installed_capacity_mw": 0.0012,
+      "cf_lag2": -0.0009,
+      "month_cos": 0.0006,
+      "nat_hydro_lag1_gwh": -0.0001
+    }
+  },
+  "lime_holdout": {
+    "local_r2": 0.7897,
+    "weights": {
+      "cf_lag1 > 0.41": 0.6465,
+      "cf_trend > 0.05": 0.1825,
+      "plant_mean_cf > 0.34": 0.0429,
+      "category=Mini Hydro": 0.0415,
+      "cf_roll3 > 0.40": 0.0144,
+      "season=NE Monsoon": -0.0089,
+      "cf_lag12 = missing": -0.006,
+      "month_cos > 0.50": -0.0054,
+      "nat_hydro_lag1_gwh > 399.32": 0.0053,
+      "installed_capacity_mw > 2.53": -0.0049,
+      "0.20 < cf_lag3 <= 0.38": -0.0039,
+      "0.20 < cf_lag2 <= 0.38": -0.0022,
+      "month_sin <= -0.50": 0.0009
+    }
+  },
+  "pdp": {
+    "cf_lag1": {
+      "grid": [
+        0.013,
+        0.046,
+        0.079,
+        0.112,
+        0.146,
+        0.179,
+        0.212,
+        0.245,
+        0.278,
+        0.312,
+        0.345,
+        0.378,
+        0.411,
+        0.445,
+        0.478,
+        0.511,
+        0.544,
+        0.577,
+        0.611,
+        0.644,
+        0.677,
+        0.71,
+        0.744,
+        0.777,
+        0.81
+      ],
+      "p_low": [
+        0.416,
+        0.344,
+        0.313,
+        0.301,
+        0.299,
+        0.273,
+        0.253,
+        0.252,
+        0.209,
+        0.186,
+        0.135,
+        0.108,
+        0.108,
+        0.074,
+        0.074,
+        0.041,
+        0.045,
+        0.042,
+        0.023,
+        0.019,
+        0.018,
+        0.007,
+        0.007,
+        0.006,
+        0.005
+      ],
+      "p_high": [
+        0.264,
+        0.283,
+        0.296,
+        0.301,
+        0.302,
+        0.293,
+        0.298,
+        0.298,
+        0.312,
+        0.319,
+        0.305,
+        0.325,
+        0.325,
+        0.374,
+        0.374,
+        0.508,
+        0.515,
+        0.534,
+        0.71,
+        0.754,
+        0.758,
+        0.873,
+        0.885,
+        0.891,
+        0.902
+      ]
+    },
+    "cf_lag12": {
+      "grid": [
+        0.007,
+        0.048,
+        0.089,
+        0.13,
+        0.171,
+        0.212,
+        0.252,
+        0.293,
+        0.334,
+        0.375,
+        0.416,
+        0.457,
+        0.498,
+        0.539,
+        0.58,
+        0.621,
+        0.662,
+        0.703,
+        0.744,
+        0.785,
+        0.826,
+        0.867,
+        0.908,
+        0.949,
+        0.99
+      ],
+      "p_low": [
+        0.474,
+        0.474,
+        0.463,
+        0.368,
+        0.191,
+        0.185,
+        0.129,
+        0.12,
+        0.094,
+        0.079,
+        0.056,
+        0.058,
+        0.046,
+        0.044,
+        0.039,
+        0.033,
+        0.018,
+        0.017,
+        0.017,
+        0.017,
+        0.017,
+        0.017,
+        0.017,
+        0.017,
+        0.017
+      ],
+      "p_high": [
+        0.185,
+        0.185,
+        0.19,
+        0.228,
+        0.274,
+        0.332,
+        0.338,
+        0.34,
+        0.35,
+        0.362,
+        0.39,
+        0.391,
+        0.42,
+        0.426,
+        0.448,
+        0.46,
+        0.646,
+        0.663,
+        0.665,
+        0.665,
+        0.665,
+        0.665,
+        0.665,
+        0.665,
+        0.665
+      ]
+    },
+    "plant_mean_cf": {
+      "grid": [
+        0.118,
+        0.136,
+        0.155,
+        0.173,
+        0.191,
+        0.21,
+        0.228,
+        0.246,
+        0.265,
+        0.283,
+        0.301,
+        0.32,
+        0.338,
+        0.357,
+        0.375,
+        0.393,
+        0.412,
+        0.43,
+        0.448,
+        0.467,
+        0.485,
+        0.503,
+        0.522,
+        0.54,
+        0.558
+      ],
+      "p_low": [
+        0.297,
+        0.27,
+        0.253,
+        0.248,
+        0.232,
+        0.236,
+        0.235,
+        0.223,
+        0.223,
+        0.216,
+        0.214,
+        0.213,
+        0.213,
+        0.212,
+        0.212,
+        0.212,
+        0.211,
+        0.211,
+        0.211,
+        0.211,
+        0.199,
+        0.194,
+        0.154,
+        0.154,
+        0.154
+      ],
+      "p_high": [
+        0.335,
+        0.328,
+        0.33,
+        0.333,
+        0.338,
+        0.337,
+        0.341,
+        0.346,
+        0.346,
+        0.353,
+        0.355,
+        0.354,
+        0.354,
+        0.373,
+        0.374,
+        0.374,
+        0.375,
+        0.375,
+        0.376,
+        0.377,
+        0.379,
+        0.381,
+        0.395,
+        0.395,
+        0.395
+      ]
+    },
+    "cf_trend": {
+      "grid": [
+        -0.235,
+        -0.213,
+        -0.19,
+        -0.168,
+        -0.145,
+        -0.123,
+        -0.1,
+        -0.078,
+        -0.056,
+        -0.033,
+        -0.011,
+        0.012,
+        0.034,
+        0.057,
+        0.079,
+        0.102,
+        0.124,
+        0.147,
+        0.169,
+        0.192,
+        0.214,
+        0.236,
+        0.259,
+        0.281,
+        0.304
+      ],
+      "p_low": [
+        0.264,
+        0.264,
+        0.264,
+        0.264,
+        0.264,
+        0.256,
+        0.256,
+        0.256,
+        0.255,
+        0.255,
+        0.255,
+        0.246,
+        0.242,
+        0.194,
+        0.197,
+        0.197,
+        0.181,
+        0.184,
+        0.123,
+        0.102,
+        0.092,
+        0.091,
+        0.09,
+        0.086,
+        0.086
+      ],
+      "p_high": [
+        0.306,
+        0.306,
+        0.306,
+        0.306,
+        0.306,
+        0.326,
+        0.326,
+        0.323,
+        0.327,
+        0.331,
+        0.331,
+        0.351,
+        0.363,
+        0.414,
+        0.414,
+        0.414,
+        0.418,
+        0.42,
+        0.44,
+        0.446,
+        0.455,
+        0.461,
+        0.469,
+        0.486,
+        0.486
+      ]
+    }
+  }
+}

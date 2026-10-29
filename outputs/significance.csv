@@ -1,0 +1,7 @@
+vs,macro_f1_difference,ci_low,ci_high,ngboost_right_other_wrong,ngboost_wrong_other_right,mcnemar_p
+Same as last month,-0.0348,-0.0606,-0.0111,216,275,0.0088
+Naive Bayes,0.044,0.0158,0.0703,244,256,0.6228
+Gaussian Process,-0.0096,-0.0297,0.0116,157,183,0.1751
+EBM,0.012,-0.0063,0.0309,161,136,0.1636
+Random Forest,-0.0016,-0.021,0.0186,147,155,0.6872
+XGBoost,-0.0059,-0.0231,0.0114,124,137,0.4577

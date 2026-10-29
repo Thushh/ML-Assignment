@@ -1,0 +1,19 @@
+model,max_depth,n_estimators,val_macro_f1,kernel,var_smoothing,interactions,learning_rate
+NGBoost,3,300,0.6665,,,,
+NGBoost,3,800,0.6978,,,,
+NGBoost,5,300,0.641,,,,
+NGBoost,5,800,0.6273,,,,
+Gaussian Process,,,0.5009,1**2 * RBF(length_scale=5),,,
+Gaussian Process,,,0.5125,"1**2 * Matern(length_scale=5, nu=1.5)",,,
+Naive Bayes,,,0.695,,1e-09,,
+Naive Bayes,,,0.6833,,0.001,,
+Naive Bayes,,,0.6682,,0.1,,
+EBM,,,0.6427,,,0,0.01
+EBM,,,0.6516,,,0,0.04
+EBM,,,0.6498,,,10,0.01
+EBM,,,0.6538,,,10,0.04
+Random Forest,8,,0.5867,,,,
+Random Forest,14,,0.6033,,,,
+Random Forest,None,,0.6125,,,,
+XGBoost,3,,0.6135,,,,
+XGBoost,5,,0.6157,,,,
