@@ -107,12 +107,12 @@ probabilities are then read off the distribution: P(Low) = P(CF < 15 %), P(High)
 
 **Split by time** (a random split would let the model learn from the future):
 
-| Set | Months | Rows | Use |
-|---|---|---|---|
-| Train | Feb-2023 – Mar-2024 | 4,371 | fit candidate models |
-| Validation | Apr-2024 – Jun-2024 | 968 | choose hyperparameters |
-| Test | Jul-2024 – Dec-2024 | 1,973 | final evaluation only |
-| Hold-out | Kirkoswald, Dec-2024 | 1 | single-sample inference demo |
+| Set | Months | Use |
+|---|---|---|
+| Train | Feb-2023 – Mar-2024 | fit candidate models |
+| Validation | Apr-2024 – Jun-2024 | choose hyperparameters |
+| Test | Jul-2024 – Dec-2024 | final evaluation only |
+| Hold-out | Kirkoswald, Dec-2024 | single-sample inference demo |
 
 After tuning, each model is refitted on train + validation and evaluated once on the test months.
 
